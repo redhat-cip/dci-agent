@@ -35,7 +35,7 @@ for req_line in parse_requirements('requirements.txt', session=False):
 setuptools.setup(
     name='dci-agent',
     version='0.1a3',
-    packages=['agent'],
+    packages=['dci_agent'],
     author='Distributed CI team',
     author_email='distributed-ci@redhat.com',
     description='DCI agent for DCI Control Server',
@@ -57,7 +57,7 @@ setuptools.setup(
     ],
     entry_points={
         'console_scripts': [
-            'dci-agent = agent.dci_agent:main',
+            'dci-agent = dci_agent.dci_agent:main',
         ],
     }
 )
