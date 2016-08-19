@@ -14,7 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import agent.dci_agent as agent
+import dci_agent.dci_agent as agent
 from dciclient.v1.api import jobstate as dci_jobstate
 import dciclient.v1.helper
 import tripleohelper.undercloud
