@@ -35,14 +35,13 @@ for req_line in parse_requirements('requirements.txt', session=False):
 setuptools.setup(
     name='dci-agent',
     version='0.1a3',
-    packages=['agent'],
+    packages=['dci_agent'],
     author='Distributed CI team',
     author_email='distributed-ci@redhat.com',
     description='DCI agent for DCI Control Server',
     long_description=_get_readme(),
     install_requires=dep_requires,
     dependency_links=dep_links,
-    url='https://github.com/redhat-cip/python-dciclient',
     license='Apache v2.0',
     include_package_data=True,
     classifiers=[
@@ -57,7 +56,7 @@ setuptools.setup(
     ],
     entry_points={
         'console_scripts': [
-            'dci-agent = agent.dci_agent:main',
+            'dci-agent = dci_agent.dci_agent:main',
         ],
     }
 )
