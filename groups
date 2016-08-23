@@ -1,6 +1,7 @@
 # UUID                                  	Group Name
 #
 1aed01a59bb8d907520af64a093817ca3bd3c0e1	dci-agent-ptl
+94fc326f31a07566ca38cacea150f7e430f5a164	python-dciclient-ptl
 eb8ff6d076c230bed1fade622009fe54a624d130	python-dciclient-core
 ff35012abf09feefcc1cb7a7a9af125b3ae302df	dci-agent-core
 global:Registered-Users                 	Registered Users
