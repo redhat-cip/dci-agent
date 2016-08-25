@@ -140,6 +140,7 @@ def main(argv=None):
             dci_helper.run_command(ctx, c, shell=True)
         dci_tripleo_helper.run_tests(
             ctx,
+            remoteci_id=remoteci['id'],
             undercloud_ip=dci_conf['undercloud_ip'],
             stack_name=dci_conf['stack_name'],
             key_filename=dci_conf['key_filename'])
