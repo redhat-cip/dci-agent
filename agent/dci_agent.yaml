@@ -32,3 +32,6 @@ hooks:
   # deploy the overcloud itself.
   overcloud:
     - ansible-playbook overcloud.yaml
+  # post deployment hook.
+  # post:
+  #  - email
