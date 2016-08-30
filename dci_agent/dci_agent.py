@@ -59,7 +59,7 @@ def init_undercloud_host(undercloud_ip, key_filename):
         user='stack',
         key_filename=key_filename)
     # copy our public SSH key to be able later to run our tests
-    undercloud.run('sudo mkdir /root/.ssh', retry=600, user='stack')
+    undercloud.run('sudo mkdir -p /root/.ssh', retry=600, user='stack')
     undercloud.run('sudo chmod 700 /root/.ssh', user='stack')
     undercloud.run('sudo cp /home/stack/.ssh/authorized_keys /root/.ssh/',
                    user='stack')
