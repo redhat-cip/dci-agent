@@ -117,14 +117,15 @@ def main(argv=None):
         logging.error('Unexpected code: %d' % r.status_code)
         logging.error(r.text)
         exit(1)
-    job_full_data = dci_job.get_full_data(ctx, ctx.last_job_id)
-    logging.debug(job_full_data)
+    components = dci_job.get_components(
+        ctx, ctx.last_job_id).json()['components']
+    logging.debug(components)
 
     try:
         prepare_local_mirror(ctx,
                              dci_conf['mirror']['directory'],
                              dci_conf['mirror']['url'],
-                             job_full_data['components'])
+                             components)
         dci_jobstate.create(ctx, 'pre-run', 'director node provisioning',
                             ctx.last_job_id)
         for c in dci_conf['hooks']['provisioning']:
