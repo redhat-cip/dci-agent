@@ -41,11 +41,11 @@ def test_dci_agent(monkeypatch, dci_context, job_id):
         mock.call(dci_context, [
             'rsync', '-av', '--hard-links',
             'partner@rhos-mirror.distributed-ci.io:/srv/puddles/path1/',
-            '/var/www/htmlpath1']),
+            './path1']),
         mock.call(dci_context, [
             'rsync', '-av', '--hard-links',
             'partner@rhos-mirror.distributed-ci.io:/srv/puddles/somewhere2/',
-            '/var/www/htmlsomewhere2']),
+            './somewhere2']),
         mock.call(dci_context, 'ansible-playbook provisioning.yaml',
                   shell=True),
         mock.call(dci_context, 'ansible-playbook undercloud.yaml',

@@ -29,6 +29,7 @@ import tripleohelper.undercloud
 
 import argparse
 import logging
+import os
 import os.path
 import sys
 import traceback
@@ -78,6 +79,9 @@ priority=0
                         ctx.last_job_id)
     with open(mirror_location + '/RHOS-DCI.repo', 'w') as f:
         for c in components:
+            dest = mirror_location + '/' + c['data']['path']
+            if not os.path.exists(dest):
+                os.makedirs(dest)
             dci_helper.run_command(
                 ctx,
                 [
@@ -86,7 +90,7 @@ priority=0
                     '--hard-links',
                     'partner@rhos-mirror.distributed-ci.io:/srv/puddles/' +
                     c['data']['path'] + '/',
-                    '/var/www/html' + c['data']['path']])
+                    dest])
             f.write(repo_entry.format(
                 mirror_url=mirror_url,
                 name=c['data']['repo_name'],
