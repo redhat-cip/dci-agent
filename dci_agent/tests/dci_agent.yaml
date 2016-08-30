@@ -9,7 +9,7 @@ remoteci: tname
 key_filename: /home/dci/.ssh/id_rsa
 undercloud_ip: 192.168.100.10
 stack_name: lab2
-commands:
+hooks:
   provisioning:
     - ansible-playbook provisioning.yaml
   undercloud:

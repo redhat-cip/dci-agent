@@ -127,7 +127,7 @@ def main(argv=None):
                              job_full_data['components'])
         dci_jobstate.create(ctx, 'pre-run', 'director node provisioning',
                             ctx.last_job_id)
-        for c in dci_conf['commands']['provisioning']:
+        for c in dci_conf['hooks']['provisioning']:
             dci_helper.run_command(ctx, c, shell=True)
         init_undercloud_host(dci_conf['undercloud_ip'],
                              dci_conf['key_filename'])
@@ -136,11 +136,11 @@ def main(argv=None):
             'running',
             'undercloud deployment',
             ctx.last_job_id)
-        for c in dci_conf['commands']['undercloud']:
+        for c in dci_conf['hooks']['undercloud']:
             dci_helper.run_command(ctx, c, shell=True)
         dci_jobstate.create(ctx, 'running', 'overcloud deployment',
                             ctx.last_job_id)
-        for c in dci_conf['commands']['overcloud']:
+        for c in dci_conf['hooks']['overcloud']:
             dci_helper.run_command(ctx, c, shell=True)
         dci_tripleo_helper.run_tests(
             ctx,
