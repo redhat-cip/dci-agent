@@ -146,7 +146,7 @@ def main(argv=None):
         dci_tripleo_helper.run_tests(
             ctx,
             undercloud_ip=dci_conf['undercloud_ip'],
-            stack_name=dci_conf['stack_name'],
+            stack_name=dci_conf.get('stack_name', 'overcloud'),
             key_filename=dci_conf['key_filename'])
     except Exception as e:
         dci_jobstate.create(ctx, 'failure', 'An exception occured.',
