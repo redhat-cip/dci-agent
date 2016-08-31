@@ -18,6 +18,8 @@ Autoreq: 0
 BuildRequires:  postgresql-server
 BuildRequires:  python-psycopg2
 BuildRequires:  python-pip
+BuildRequires:  python-rpm-macros
+BuildRequires:  python2-rpm-macros
 
 Requires:       python-prettytable
 Requires:       py-bcrypt
