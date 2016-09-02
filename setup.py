@@ -40,6 +40,7 @@ setuptools.setup(
     packages=['dci_agent'],
     author='Distributed CI team',
     author_email='distributed-ci@redhat.com',
+    url='https://github.com/redhat-openstack/dci-agent',
     description='DCI agent for DCI Control Server',
     long_description=_get_readme(),
     install_requires=dep_requires,
