@@ -11,3 +11,7 @@ ChangeLog
 .testrepository
 password
 development
+.cache
+.coverage
+.db_dir
+htmlcov
