@@ -10,7 +10,9 @@ Summary:        DCI Agent for DCI control server
 License:        ASL 2.0
 URL:            https://github.com/redhat-openstack/dci-agent
 
-Source0:        dci-agent-%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
+Source1:        %{name}.service
+Source2:        %{name}.timer
 
 BuildArch:      noarch
 Autoreq: 0
@@ -51,19 +53,16 @@ DCI agent for DCI control server.
 
 %install
 %py2_install
-# Install systemd units
-
-install -p -D -m 644 dci_agent/systemd/dci-agent.service %{buildroot}%{_unitdir}/%{name}.service
-install -p -D -m 644 dci_agent/systemd/dci-agent.timer %{buildroot}%{_unitdir}/%{name}.service
-
+install -p -D -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
+install -p -D -m 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.timer
 
 %check
 %{__python2} setup.py test
 
-%pre common
-getent group %{name} >/dev/null || groupadd -r %{service}
+%pre
+getent group %{name} >/dev/null || groupadd -r %{name}
 getent passwd %{name} >/dev/null || \
-    useradd -r -g %{name} -d %{_sharedstatedir}/%{service} -s /sbin/nologin \
+    useradd -r -g %{name} -d %{_sharedstatedir}/%{name} -s /sbin/nologin \
             -c "DCI-Agent service" %{name}
 exit 0
 
@@ -80,6 +79,7 @@ exit 0
 %doc README.rst
 %{python2_sitelib}/*
 %{_bindir}/dci-agent
+%{_unitdir}
 
 %changelog
 * Fri Aug 26 2016 Gonéri Le Bouder <goneri@redhat.com> - 0.0.1-1
