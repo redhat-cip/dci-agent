@@ -1,0 +1,10 @@
+[Unit]
+Description=DCI Agent
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/dci-agent
+User=dci-agent
+
+[Install]
+WantedBy=default.target

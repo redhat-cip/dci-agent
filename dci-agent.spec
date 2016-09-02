@@ -20,6 +20,8 @@ BuildRequires:  python-psycopg2
 BuildRequires:  python-pip
 BuildRequires:  python-rpm-macros
 BuildRequires:  python2-rpm-macros
+BuildRequires:  systemd
+BuildRequires:  systemd-units
 
 Requires:       python-prettytable
 Requires:       py-bcrypt
@@ -33,6 +35,11 @@ Requires:       python2-dciclient
 Requires:       python-setuptools
 Requires:       python-tripleo-helper
 
+Requires(pre): shadow-utils
+Requires(post): systemd
+Requires(preun): systemd
+Requires(postun): systemd
+
 %description
 DCI agent for DCI control server.
 
@@ -44,9 +51,30 @@ DCI agent for DCI control server.
 
 %install
 %py2_install
+# Install systemd units
+
+install -p -D -m 644 dci_agent/systemd/dci-agent.service %{buildroot}%{_unitdir}/%{name}.service
+install -p -D -m 644 dci_agent/systemd/dci-agent.timer %{buildroot}%{_unitdir}/%{name}.service
+
 
 %check
 %{__python2} setup.py test
+
+%pre common
+getent group %{name} >/dev/null || groupadd -r %{service}
+getent passwd %{name} >/dev/null || \
+    useradd -r -g %{name} -d %{_sharedstatedir}/%{service} -s /sbin/nologin \
+            -c "DCI-Agent service" %{name}
+exit 0
+
+%post
+%systemd_post %{name}.service
+
+%preun
+%systemd_preun %{name}.service
+
+%postun
+%systemd_postun_with_restart %{name}.service
 
 %files -n %{name}
 %doc README.rst
