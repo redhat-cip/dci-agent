@@ -19,6 +19,8 @@ import codecs
 from pip.req import parse_requirements
 import setuptools
 
+from dci_agent import version
+
 
 def _get_readme():
     with codecs.open('README.rst', 'r', encoding='utf8') as f:
@@ -34,7 +36,7 @@ for req_line in parse_requirements('requirements.txt', session=False):
 
 setuptools.setup(
     name='dci-agent',
-    version='0.1a3',
+    version=version,
     packages=['dci_agent'],
     author='Distributed CI team',
     author_email='distributed-ci@redhat.com',
