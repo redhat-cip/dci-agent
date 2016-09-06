@@ -16,6 +16,7 @@
 
 import dci_agent.dci_agent as agent
 from dciclient.v1.api import jobstate as dci_jobstate
+from dciclient.v1.api import file as dci_file
 import dciclient.v1.helper
 import tripleohelper.undercloud
 
@@ -23,7 +24,7 @@ import mock
 import os.path
 
 
-def test_dci_agent(monkeypatch, dci_context, job_id):
+def test_dci_agent_success(monkeypatch, dci_context, job_id):
     def return_context(**args):
         return dci_context
     mock_run_commands = mock.Mock()
@@ -64,3 +65,32 @@ def test_dci_agent(monkeypatch, dci_context, job_id):
                                       undercloud_ip='192.168.100.10',
                                       stack_name='lab2',
                                       key_filename='/home/dci/.ssh/id_rsa')
+
+    assert js[-1]['status'] == 'success'
+    assert js[-1]['comment'] is None
+
+
+def test_dci_agent_failure(monkeypatch, dci_context, job_id):
+    def return_context(**a):
+        return dci_context
+    def raise_exception(*a, **b):
+        raise Exception('booom')
+    mock_run_commands = mock.Mock()
+    mock_run_tests = raise_exception
+    monkeypatch.setattr(agent, 'get_dci_context', return_context)
+    monkeypatch.setattr(dciclient.v1.helper, 'run_command',
+                        mock_run_commands)
+    monkeypatch.setattr(tripleohelper.undercloud, 'Undercloud', mock.Mock())
+    monkeypatch.setattr(dciclient.v1.tripleo_helper, 'run_tests',
+                        mock_run_tests)
+    agent.main(['--topic', 'topic_name', '--config',
+                os.path.dirname(__file__) + '/dci_agent.yaml'])
+
+    js = dci_jobstate.list(dci_context).json()['jobstates']
+    assert js[-1]['status'] == 'failure'
+    assert js[-1]['comment'] == 'booom'
+
+    # the where filter does not work yet: I1f0df01f813efae75f6e0e75a3861d2d4ba5694a
+    files = dci_file.list(dci_context).json()['files']
+    content = dci_file.content(dci_context, files[-1]['id'])
+    assert 'most recent call last' in content.text
