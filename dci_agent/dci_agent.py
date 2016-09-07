@@ -152,15 +152,28 @@ def main(argv=None):
             undercloud_ip=dci_conf['undercloud_ip'],
             stack_name=dci_conf.get('stack_name', 'overcloud'),
             key_filename=dci_conf['key_filename'])
+        final_status = 'success'
+        backtrace = ''
+        msg = ''
     except Exception as e:
-        dci_jobstate.create(ctx, 'failure', 'An exception occured.',
-                            ctx.last_job_id)
-        content = traceback.format_exc()
-        logging.error(content)
-        dci_file.create(ctx, 'error', str(e), mime='text/plain',
-                        jobstate_id=ctx.last_jobstate_id)
-        dci_file.create(ctx, 'backtrace', content, mime='text/plain',
-                        jobstate_id=ctx.last_jobstate_id)
+        final_status = 'failure'
+        backtrace = traceback.format_exc()
+        msg = str(e)
+    finally:
+        dci_jobstate.create(
+            ctx,
+            final_status,
+            msg,
+            ctx.last_job_id)
+        logging.info('Final status: ' + final_status)
+        if backtrace:
+            logging.error(backtrace)
+            dci_file.create(
+                ctx,
+                'backtrace',
+                backtrace,
+                mime='text/plain',
+                jobstate_id=ctx.last_jobstate_id)
 
 if __name__ == '__main__':
     main()
