@@ -174,6 +174,8 @@ def main(argv=None):
                 backtrace,
                 mime='text/plain',
                 jobstate_id=ctx.last_jobstate_id)
+        return final_status
 
 if __name__ == '__main__':
-    main()
+    return_code = 0 if main() == 'success' else 1
+    sys.exit(return_code)
