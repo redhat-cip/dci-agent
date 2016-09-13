@@ -4,6 +4,7 @@ Description=DCI Agent
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/dci-agent
+SuccessExitStatus=0
 User=dci-agent
 
 [Install]
