@@ -1,19 +1,6 @@
 DCI Agent
 =========
 
-Dci
----
+This is the DCI Agent.
 
-TODO
-
-
-Chainsaw
---------
-
-TODO
-
-
-Tox
----
-
-TODO
+ https://docs.distributed-ci.io/
