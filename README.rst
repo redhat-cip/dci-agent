@@ -1,19 +1,4 @@
 DCI Agent
 =========
 
-Dci
----
-
-TODO
-
-
-Chainsaw
---------
-
-TODO
-
-
-Tox
----
-
-TODO
+This is the DCI Agent.
