@@ -21,6 +21,7 @@ import dciclient.v1.helper
 import tripleohelper.undercloud
 
 import mock
+from mock import ANY
 import os.path
 import pytest
 
@@ -64,9 +65,10 @@ def test_dci_agent_success(monkeypatch, dci_context, job_id):
     assert comments[2] == 'undercloud deployment'
     assert comments[3] == 'overcloud deployment'
     mock_run_tests.assert_called_with(dci_context,
-                                      undercloud_ip='192.168.100.10',
+                                      key_filename='/home/dci/.ssh/id_rsa',
+                                      remoteci_id=ANY,
                                       stack_name='lab2',
-                                      key_filename='/home/dci/.ssh/id_rsa')
+                                      undercloud_ip='192.168.100.10')
 
     assert js[-1]['status'] == 'success'
     assert js[-1]['comment'] is None
