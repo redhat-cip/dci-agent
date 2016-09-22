@@ -150,8 +150,9 @@ def main(argv=None):
         dci_tripleo_helper.run_tests(
             ctx,
             undercloud_ip=dci_conf['undercloud_ip'],
-            stack_name=dci_conf.get('stack_name', 'overcloud'),
-            key_filename=dci_conf['key_filename'])
+            key_filename=dci_conf['key_filename'],
+            remoteci_id=remoteci['id'],
+            stack_name=dci_conf.get('stack_name', 'overcloud'))
         final_status = 'success'
         backtrace = ''
         msg = ''
