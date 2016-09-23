@@ -159,23 +159,19 @@ def main(argv=None):
         final_status = 'failure'
         backtrace = traceback.format_exc()
         msg = str(e)
-    finally:
-        dci_jobstate.create(
+        pass
+    dci_jobstate.create(
+        ctx,
+        final_status,
+        msg,
+        ctx.last_job_id)
+    logging.info('Final status: ' + final_status)
+    if backtrace:
+        logging.error(backtrace)
+        dci_file.create(
             ctx,
-            final_status,
-            msg,
-            ctx.last_job_id)
-        logging.info('Final status: ' + final_status)
-        if backtrace:
-            logging.error(backtrace)
-            dci_file.create(
-                ctx,
-                'backtrace',
-                backtrace,
-                mime='text/plain',
-                jobstate_id=ctx.last_jobstate_id)
-        return final_status
-
-if __name__ == '__main__':
-    return_code = 0 if main() == 'success' else 1
-    sys.exit(return_code)
+            'backtrace',
+            backtrace,
+            mime='text/plain',
+            jobstate_id=ctx.last_jobstate_id)
+    sys.exit(0 if final_status == 'success' else 1)

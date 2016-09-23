@@ -22,6 +22,7 @@ import tripleohelper.undercloud
 
 import mock
 import os.path
+import pytest
 
 
 def test_dci_agent_success(monkeypatch, dci_context, job_id):
@@ -35,8 +36,9 @@ def test_dci_agent_success(monkeypatch, dci_context, job_id):
     monkeypatch.setattr(tripleohelper.undercloud, 'Undercloud', mock.Mock())
     monkeypatch.setattr(dciclient.v1.tripleo_helper, 'run_tests',
                         mock_run_tests)
-    agent.main(['--topic', 'topic_name', '--config',
-                os.path.dirname(__file__) + '/dci_agent.yaml'])
+    with pytest.raises(SystemExit):
+        agent.main(['--topic', 'topic_name', '--config',
+                    os.path.dirname(__file__) + '/dci_agent.yaml'])
 
     calls = [
         mock.call(dci_context, [
@@ -84,8 +86,9 @@ def test_dci_agent_failure(monkeypatch, dci_context, job_id):
     monkeypatch.setattr(tripleohelper.undercloud, 'Undercloud', mock.Mock())
     monkeypatch.setattr(dciclient.v1.tripleo_helper, 'run_tests',
                         mock_run_tests)
-    agent.main(['--topic', 'topic_name', '--config',
-                os.path.dirname(__file__) + '/dci_agent.yaml'])
+    with pytest.raises(SystemExit):
+        agent.main(['--topic', 'topic_name', '--config',
+                    os.path.dirname(__file__) + '/dci_agent.yaml'])
 
     js = dci_jobstate.list(dci_context).json()['jobstates']
     assert js[-1]['status'] == 'failure'
