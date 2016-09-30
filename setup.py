@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2015-2016 Red Hat, Inc
+# Copyright (C) 2016 Red Hat, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -16,35 +16,41 @@
 # under the License.
 
 import codecs
-from pip.req import parse_requirements
+import os
 import setuptools
 
 from dci_agent import version
 
 
+def _get_requirements():
+    requirements_path = '%s/%s' % (os.path.dirname(os.path.abspath(__file__)),
+                                   'requirements.txt')
+    with open(requirements_path, 'r') as f:
+        requirements = f.read()
+        # remove the dependencies which comes from url source because
+        # it's not supported by install_requires
+        return [dep for dep in requirements.split('\n')
+                if not dep.startswith('-e')]
+
+
 def _get_readme():
-    with codecs.open('README.rst', 'r', encoding='utf8') as f:
+    readme_path = '%s/%s' % (os.path.dirname(os.path.abspath(__file__)),
+                             'README.md')
+
+    with codecs.open(readme_path, 'r', encoding='utf8') as f:
         return f.read()
 
-dep_requires = []
-dep_links = []
-for req_line in parse_requirements('requirements.txt', session=False):
-    if req_line.link:
-        dep_links.append(str(req_line.link.url))
-    else:
-        dep_requires.append(str(req_line.req))
 
 setuptools.setup(
     name='dci-agent',
-    version=version,
-    packages=['dci_agent'],
+    version=version.__version__,
+    packages=setuptools.find_packages(),
     author='Distributed CI team',
     author_email='distributed-ci@redhat.com',
-    url='https://github.com/redhat-openstack/dci-agent',
-    description='DCI agent for DCI Control Server',
+    description='DCI Agent',
     long_description=_get_readme(),
-    install_requires=dep_requires,
-    dependency_links=dep_links,
+    install_requires=_get_requirements(),
+    url='https://github.com/redhat-cip/dci-agent',
     license='Apache v2.0',
     include_package_data=True,
     classifiers=[
@@ -59,7 +65,7 @@ setuptools.setup(
     ],
     entry_points={
         'console_scripts': [
-            'dci-agent = dci_agent.dci_agent:main',
+            'dci-agent = dci_agent.shell:main'
         ],
     }
 )
