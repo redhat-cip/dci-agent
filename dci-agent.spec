@@ -1,86 +1,68 @@
-%if 0%{?fedora}
-%global with_python3 1
-%endif
 
 Name:           dci-agent
 Version:        0.0.VERS
 Release:        1%{?dist}
 
-Summary:        DCI Agent for DCI control server
+Summary:        DCI agent
 License:        ASL 2.0
-URL:            https://github.com/redhat-openstack/dci-agent
+URL:            https://github.com/Spredzy/agent2
 
-Source0:        %{name}-%{version}.tar.gz
-Source1:        %{name}.service
-Source2:        %{name}.timer
+Source0:        dci-agent-%{version}.tgz
+Source1:        dci_agent.conf
+Source2:        dci_agent.conf.d/ansible.conf.sample
+Source3:        dci_agent.conf.d/email.conf.sample
+Source4:        dci_agent.conf.d/file.conf.sample
+Source5:        dci_agent.conf.d/irc.conf.sample
+Source6:        dci_agent.conf.d/mirror.conf.sample
+Source7:        dci_agent.conf.d/tests.conf.sample
 
 BuildArch:      noarch
-Autoreq: 0
 
-BuildRequires:  postgresql-server
-BuildRequires:  python-psycopg2
-BuildRequires:  python-pip
-BuildRequires:  python-rpm-macros
-BuildRequires:  python2-rpm-macros
-BuildRequires:  systemd
-BuildRequires:  systemd-units
+BuildRequires:  python2-devel
+BuildRequires:  python-setuptools
+BuildRequires:  python-tox
+BuildRequires:  python-requests
+BuildRequires:  libffi-devel
 
-Requires:       python-prettytable
-Requires:       py-bcrypt
+Requires:       ansible
 Requires:       python-click
-Requires:       PyYAML
 Requires:       python-requests
-Requires:       python-simplejson
-Requires:       python-six
-Requires:       python-configparser
-Requires:       python2-dciclient
-Requires:       python-setuptools
-Requires:       python-tripleo-helper
+Requires:       python-dciclient
+Requires:       python-jinja2
+Requires:       PyYAML
 
-Requires(pre): shadow-utils
-Requires(post): systemd
-Requires(preun): systemd
-Requires(postun): systemd
 
 %description
-DCI agent for DCI control server.
+DCI agent
 
-%prep
-%autosetup -n %{name}-%{version}
+%prep -a
+%setup -qc
 
 %build
 %py2_build
 
 %install
 %py2_install
-install -p -D -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
-install -p -D -m 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.timer
+
+mkdir -p %{buildroot}%{_sysconfdir}/dci_agent.conf.d
+
+install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}
+install -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/
+install -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/
+install -m 0644 %{SOURCE4} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/
+install -m 0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/
+install -m 0644 %{SOURCE6} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/
+install -m 0644 %{SOURCE7} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/
 
 %check
-%{__python2} setup.py test
 
-%pre
-getent group %{name} >/dev/null || groupadd -r %{name}
-getent passwd %{name} >/dev/null || \
-    useradd -r -g %{name} -d %{_sharedstatedir}/%{name} -s /sbin/nologin \
-            -c "DCI-Agent service" %{name}
-exit 0
-
-%post
-%systemd_post %{name}.service
-
-%preun
-%systemd_preun %{name}.service
-
-%postun
-%systemd_postun_with_restart %{name}.service
-
-%files -n %{name}
-%doc README.rst
+%files
+%doc
 %{python2_sitelib}/*
+%config(noreplace) %{_sysconfdir}/*
 %{_bindir}/dci-agent
-%{_unitdir}
+
 
 %changelog
-* Fri Aug 26 2016 Gonéri Le Bouder <goneri@redhat.com> - 0.0.1-1
-- Initial release
+* Tue Sep 06 2016 Yanis Guenane <yguenane@redhat.com> 0.1-1
+- Initial commit
