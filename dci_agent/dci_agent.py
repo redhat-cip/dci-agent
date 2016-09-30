@@ -82,6 +82,8 @@ priority=0
     with open(mirror_location + '/RHOS-DCI.repo', 'w') as f:
         for c in components:
             dest = mirror_location + '/' + c['data']['path']
+            from pprint import pprint
+            pprint(c)
             if not os.path.exists(dest):
                 os.makedirs(dest)
             dci_helper.run_command(

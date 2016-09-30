@@ -27,10 +27,11 @@ import dciclient.v1.tests.shell_commands.utils as utils
 import pytest
 import sqlalchemy
 import sqlalchemy_utils.functions
-
+import swiftclient
 
 import click.testing
 import functools
+import mock
 import passlib.apps as passlib_apps
 
 
@@ -75,22 +76,12 @@ def db_provisioning(db_clean, engine):
 
 
 @pytest.fixture
-def server(db_provisioning, engine):
+def server(monkeypatch, db_provisioning, engine):
+    monkeypatch.setattr(swiftclient, 'client', mock.Mock())
     app = dci.app.create_app(dci.dci_config.generate_conf())
     app.testing = True
     app.engine = engine
     return app
-
-
-@pytest.fixture
-def client(server, db_provisioning):
-    client = dci_client.DCIClient(
-        end_point='http://dci_server.com/api',
-        login='admin', password='admin'
-    )
-    flask_adapter = utils.FlaskHTTPAdapter(server.test_client())
-    client.s.mount('http://dci_server.com', flask_adapter)
-    return client
 
 
 @pytest.fixture
@@ -121,13 +112,13 @@ def dci_context_broken(server, db_provisioning):
     return test_context
 
 
-@pytest.fixture
-def runner(dci_context):
-    api.context.build_dci_context = lambda **kwargs: dci_context
-    runner = click.testing.CliRunner(env={'DCI_LOGIN': '', 'DCI_PASSWORD': '',
-                                          'DCI_CLI_OUTPUT_FORMAT': 'json'})
-    runner.invoke = functools.partial(runner.invoke, shell.main)
-    return runner
+# @pytest.fixture
+# def runner(dci_context):
+#     api.context.build_dci_context = lambda **kwargs: dci_context
+#     runner = click.testing.CliRunner(env={'DCI_LOGIN': '', 'DCI_PASSWORD': '',
+#                                           'DCI_CLI_OUTPUT_FORMAT': 'json'})
+#     runner.invoke = functools.partial(runner.invoke, shell.main)
+#     return runner
 
 
 @pytest.fixture
@@ -148,20 +139,44 @@ def test_id(dci_context, topic_id):
 
 
 @pytest.fixture
-def components(dci_context, topic_id):
+def tarball_factory(tmpdir):
+    def factory():
+        import tarfile
+        cmp_dir = tmpdir.mkdir('component_1')
+        cmp_dir.join('some-file.txt').write('foo')
+        cmp_dir.join('some-file-2.txt').write('foo')
+        p = tmpdir.join('archive.tar')
+        with tarfile.open(p.strpath, mode='w:') as tb:
+            tb.add(cmp_dir.strpath, arcname='component_1')
+        return p.strpath
+    return factory
+
+
+@pytest.fixture
+def components(dci_context, topic_id, tarball_factory):
+    components = []
     component1 = {'name': 'component1',
                   'type': 'git_commit',
                   'data': {'path': 'somewhere1', 'repo_name': 'compt1'},
-                  'canonical_project_name': 'component 1',
+                  'canonical_project_name': 'component_1',
                   'topic_id': topic_id}
+    new_cpt = api.component.create(dci_context, **component1).json()['component']
+    path = tarball_factory()
+    print('>>' + path)
+    api.component.upload_file(dci_context, new_cpt['id'], path)
 
-    component2 = {'name': 'component2',
-                  'type': 'git_commit',
-                  'data': {'path': 'somewhere1', 'repo_name': 'compt1'},
-                  'canonical_project_name': 'component 2',
-                  'topic_id': topic_id}
 
-    return [component1, component2]
+    # component2 = {'name': 'component2',
+    #               'type': 'git_commit',
+    #               'data': {'path': 'somewhere1', 'repo_name': 'compt1'},
+    #               'canonical_project_name': 'component_2',
+    #               'topic_id': topic_id}
+    # components.append(
+    #     api.component.create(dci_context, **component2).json()['component'])
+
+    # from pprint import pprint
+    # pprint(components)
+    return [component1]
 
 
 @pytest.fixture
@@ -234,7 +249,7 @@ def job_id(dci_context):
 
 
 @pytest.fixture
-def jobstate_id(dci_context, job_id):
-    kwargs = {'job_id': job_id, 'status': 'running', 'comment': 'some comment'}
+def jobstate_id(dci_context, job_id, team_id):
+    kwargs = {'job_id': job_id, 'team_id': team_id, 'status': 'running', 'comment': 'some comment'}
     jobstate = api.jobstate.create(dci_context, **kwargs).json()
     return jobstate['jobstate']['id']

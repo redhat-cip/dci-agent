@@ -15,6 +15,7 @@
 # under the License.
 
 import dci_agent.dci_agent as agent
+from dciclient.v1.api import component as dci_component
 from dciclient.v1.api import file as dci_file
 from dciclient.v1.api import jobstate as dci_jobstate
 import dciclient.v1.helper
@@ -24,6 +25,16 @@ import mock
 from mock import ANY
 import os.path
 import pytest
+
+
+def test_prepare_local_mirror(dci_context, components, tmpdir, job_id):
+    td = tmpdir.mkdir('bob')
+    print(td)
+    print(components)
+
+
+    agent.prepare_local_mirror(dci_context, str(td), 'http://somewhere', components)
+    assert False
 
 
 def test_dci_agent_success(monkeypatch, dci_context, job_id):
