@@ -18,6 +18,7 @@
 from dci_agent import config as conf
 from dci_agent import utils
 from dci_agent import version
+from dciclient.v1.api import component as dci_component
 from dciclient.v1.api import context as dci_context
 from dciclient.v1.api import file as dci_file
 from dciclient.v1.api import job as dci_job
@@ -34,8 +35,10 @@ import click
 import logging
 import os
 import os.path
+import shutil
 import subprocess
 import sys
+import tarfile
 import traceback
 
 
@@ -84,6 +87,7 @@ def init_undercloud_host(undercloud_ip, key_filename):
 
 
 def prepare_local_mirror(ctx, mirror_location, mirror_url, components):
+    """Fetch the different components and prepare a repo file."""
     repo_entry = """
 [{name}]
 name={name}
@@ -93,26 +97,32 @@ gpgcheck=0
 priority=0
 
 """
+    if os.path.exists(mirror_location + '/current'):
+        shutil.rmtree(mirror_location + '/current')
     dci_jobstate.create(ctx, 'pre-run', 'refreshing local mirror',
                         ctx.last_job_id)
-    with open(mirror_location + '/RHOS-DCI.repo', 'w') as f:
+    repo_dest = mirror_location + '/' + ctx.last_job_id
+    with open(mirror_location + '/' + ctx.last_job_id + '.repo', 'w') as f:
         for c in components:
-            dest = mirror_location + '/' + c['data']['path']
-            if not os.path.exists(dest):
-                os.makedirs(dest)
-            dci_helper.run_command(
-                ctx,
-                [
-                    'rsync',
-                    '-av',
-                    '--hard-links',
-                    'partner@rhos-mirror.distributed-ci.io:/srv/puddles/' +
-                    c['data']['path'] + '/',
-                    dest])
+            tarball_dest = mirror_location + '/' + c['id'] + '.tar'
+            if not os.path.exists(repo_dest):
+                os.makedirs(repo_dest)
+            component_file = dci_component.file_list(
+                ctx, c['id']).json()['component_files'][0]
+            # TODO(Goneri): test the md5/size of the existing tarball first
+            if not os.path.exists(tarball_dest):
+                dci_component.file_download(
+                    ctx,
+                    c['id'],
+                    component_file['id'],
+                    tarball_dest)
+            with tarfile.open(name=tarball_dest, mode='r:') as tf:
+                tf.extractall(path=repo_dest)
+            project_name = c['canonical_project_name']
             f.write(repo_entry.format(
                 mirror_url=mirror_url,
                 name=c['data']['repo_name'],
-                path=c['data']['path']))
+                path='/' + ctx.last_job_id + '/' + project_name))
 
 
 @click.command()

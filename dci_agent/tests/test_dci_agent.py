@@ -26,6 +26,19 @@ import os.path
 import pytest
 
 
+def test_prepare_local_mirror(dci_context, components, tmpdir, job_id):
+    td = tmpdir
+    agent.prepare_local_mirror(
+        dci_context,
+        td.strpath,
+        'http://somewhere',
+        components)
+    c_dir = tmpdir.join(dci_context.last_job_id)
+    c_dir = c_dir.join(components[0]['canonical_project_name'])
+    assert c_dir.check()
+    assert c_dir.join('some-file.txt').open().read() == 'foo'
+
+
 def test_dci_agent_success(monkeypatch, dci_context, job_id):
     def return_context(**args):
         return dci_context
@@ -42,14 +55,6 @@ def test_dci_agent_success(monkeypatch, dci_context, job_id):
                     os.path.dirname(__file__) + '/dci_agent.conf'])
 
     calls = [
-        mock.call(dci_context, [
-            'rsync', '-av', '--hard-links',
-            'partner@rhos-mirror.distributed-ci.io:/srv/puddles/path1/',
-            './path1']),
-        mock.call(dci_context, [
-            'rsync', '-av', '--hard-links',
-            'partner@rhos-mirror.distributed-ci.io:/srv/puddles/somewhere2/',
-            './somewhere2']),
         mock.call(dci_context, 'ansible-playbook provisioning.yaml',
                   shell=True),
         mock.call(dci_context, 'ansible-playbook undercloud.yaml',
@@ -93,14 +98,6 @@ def test_dci_agent_success_no_teardown(monkeypatch, dci_context, job_id):
                     os.path.dirname(__file__) + '/dci_agent_no_teardown.yaml'])
 
     calls = [
-        mock.call(dci_context, [
-            'rsync', '-av', '--hard-links',
-            'partner@rhos-mirror.distributed-ci.io:/srv/puddles/path1/',
-            './path1']),
-        mock.call(dci_context, [
-            'rsync', '-av', '--hard-links',
-            'partner@rhos-mirror.distributed-ci.io:/srv/puddles/somewhere2/',
-            './somewhere2']),
         mock.call(dci_context, 'ansible-playbook provisioning.yaml',
                   shell=True),
         mock.call(dci_context, 'ansible-playbook undercloud.yaml',
