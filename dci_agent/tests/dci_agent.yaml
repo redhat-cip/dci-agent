@@ -1,6 +1,6 @@
 mirror:
   url: http://192.168.100.11
-  directory: .
+  directory: /tmp
 auth:
   dci_cs_url: http://dciserver.com
   dci_login: admin
