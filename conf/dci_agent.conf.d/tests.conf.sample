@@ -1,0 +1,4 @@
+tests:
+  remoteci_id: REMOTECIID
+  key_filename: /root/,ssh/id_rsa
+  undercloud_ip: 192.168.0.1

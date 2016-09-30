@@ -1,0 +1,11 @@
+irc:
+  server: irc.freenode.net
+  port: 6667
+  chan: '#chan'
+  nick: 'dcibot'
+  ident: 'dcibot'
+  realname: 'The DCI bot'
+  pre-run:
+    message: (%r) A Run of DCI agent for %j is about to start (%c)
+  post-run:
+    message: (%r) A Run of DCI agent for %j is has succesfully finished (%c)
