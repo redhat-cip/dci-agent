@@ -32,3 +32,6 @@ hooks:
   # deploy the overcloud itself.
   overcloud:
     - ansible-playbook overcloud.yaml
+  # teardown the platform.
+  teardown:
+    - ansible-playbook teardown.yaml

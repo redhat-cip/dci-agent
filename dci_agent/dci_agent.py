@@ -161,6 +161,24 @@ def main(argv=None):
         backtrace = traceback.format_exc()
         msg = str(e)
         pass
+
+    # Teardown should happen even in case of failure and should not make the
+    # agent run fail.
+    try:
+        dci_jobstate.create(ctx, 'post-run', 'teardown')
+        for c in dci_conf['hooks']['teardown']:
+            dci_helper.run_command(ctx, c, shell=True)
+    except Exception as e:
+        backtrace_teardown = str(e) + '\n' + traceback.format_exc()
+        logging.error(backtrace_teardown)
+        dci_file.create(
+            ctx,
+            'backtrace_teardown',
+            backtrace_teardown,
+            mime='text/plain',
+            jobstate_id=ctx.last_jobstate_id)
+        pass
+
     dci_jobstate.create(
         ctx,
         final_status,
