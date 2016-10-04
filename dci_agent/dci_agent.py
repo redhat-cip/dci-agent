@@ -153,6 +153,9 @@ def main(argv=None):
             key_filename=dci_conf['key_filename'],
             remoteci_id=remoteci['id'],
             stack_name=dci_conf.get('stack_name', 'overcloud'))
+        dci_jobstate.create(ctx, 'post-run', 'teardown')
+        for c in dci_conf['hooks']['teardown']:
+            dci_helper.run_command(ctx, c, shell=True)
         final_status = 'success'
         backtrace = ''
         msg = ''
