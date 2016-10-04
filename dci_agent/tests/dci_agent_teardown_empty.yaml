@@ -17,4 +17,3 @@ hooks:
   overcloud:
     - ansible-playbook overcloud.yaml
   teardown:
-    - ansible-playbook teardown.yaml
