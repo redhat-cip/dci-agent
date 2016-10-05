@@ -15,7 +15,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from . import version
+from dci_agent import config as conf
+from dci_agent import version
 from dciclient.v1.api import context as dci_context
 from dciclient.v1.api import file as dci_file
 from dciclient.v1.api import job as dci_job
@@ -34,17 +35,6 @@ import os
 import os.path
 import sys
 import traceback
-import yaml
-
-
-def load_config(config_path):
-    with open(config_path, 'r') as fd:
-        dci_conf = yaml.load(fd)
-    if 'key_filename' not in dci_conf:
-        dci_conf['key_filename'] = os.path.expanduser('~/.ssh/id_rsa')
-    if 'repository' not in dci_conf['mirror']:
-        dci_conf['mirror']['repository'] = '/var/www/html'
-    return dci_conf
 
 
 def get_dci_context(**args):
@@ -132,7 +122,7 @@ def main(argv=None):
                         version=('dci-agent %s' % version))
     args = parser.parse_args(argv)
 
-    dci_conf = load_config(args.config)
+    dci_conf = conf.load_config(args.config)
     ctx = get_dci_context(**dci_conf['auth'])
 
     topic_name = args.topic if args.topic else dci_conf['topic']
