@@ -1,0 +1,10 @@
+email:
+  from: youremail@example.com
+  smtp_server: smtp.example.com
+  smtp_port: 587
+  pre-run:
+    subject: A Run of DCI agent for %j is about to start
+    message: A Run of DCI agent for %j is about to start
+  post-run:
+    subject: A Run of DCI agent for %j has finished
+    message: A Run of DCI agent for %j has finished
