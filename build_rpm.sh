@@ -17,6 +17,8 @@ sed -i "s,version = '\(.*\)',version = '0.0.${DATE}git${SHA}'," dci_agent/__init
 python setup.py sdist
 cp -v dist/* ${HOME}/rpmbuild/SOURCES/
 cp -v dci_agent/systemd/* ${HOME}/rpmbuild/SOURCES/
+cp -v conf/dci_agent.yaml ${HOME}/rpmbuild/SOURCES/
+cp -v conf/dci_agent.conf.d/* ${HOME}/rpmbuild/SOURCES/
 sed "s/VERS/${DATE}git${SHA}/g" ${PROJ_NAME}.spec > ${HOME}/rpmbuild/SPECS/${PROJ_NAME}.spec
 
 rpmbuild -bs ${HOME}/rpmbuild/SPECS/${PROJ_NAME}.spec
