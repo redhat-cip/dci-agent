@@ -13,6 +13,13 @@ URL:            https://github.com/redhat-openstack/dci-agent
 Source0:        %{name}-%{version}.tar.gz
 Source1:        %{name}.service
 Source2:        %{name}.timer
+Source3:        dci_agent.yaml
+Source4:        dci_agent.conf.d/ansible.conf.sample
+Source5:        dci_agent.conf.d/email.conf.sample
+Source6:        dci_agent.conf.d/file.conf.sample
+Source7:        dci_agent.conf.d/irc.conf.sample
+Source8:        dci_agent.conf.d/mirror.conf.sample
+Source9:        dci_agent.conf.d/tests.conf.sample
 
 BuildArch:      noarch
 Autoreq: 0
@@ -59,6 +66,14 @@ DCI agent for DCI control server.
 install -p -D -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
 install -p -D -m 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.timer
 
+install -p -D -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/dci_agent.conf
+install -p -D -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/ansible.conf.sample
+install -p -D -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/email.conf.sample
+install -p -D -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/file.conf.sample
+install -p -D -m 644 %{SOURCE7} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/irc.conf.sample
+install -p -D -m 644 %{SOURCE8} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/mirror.conf.sample
+install -p -D -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/tests.conf.sample
+
 %check
 %{__python2} setup.py test
 
@@ -83,6 +98,7 @@ exit 0
 %{python2_sitelib}/*
 %{_bindir}/dci-agent
 %{_unitdir}
+%config(noreplace) %{_sysconfdir}/*
 
 %changelog
 * Fri Aug 26 2016 Gonéri Le Bouder <goneri@redhat.com> - 0.0.1-1
