@@ -1,0 +1,8 @@
+ansible:
+  pre-run:
+    template: /srv/dci_agent/pre.yml.j2
+    playbook: /srv/dci_agent/pre.yml
+  running:
+    playbook: /srv/dci_agent/main.yml
+  post-run:
+    playbook: /srv/dci_agent/post.yml
