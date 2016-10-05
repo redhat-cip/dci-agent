@@ -40,8 +40,6 @@ import yaml
 def load_config(config_path):
     with open(config_path, 'r') as fd:
         dci_conf = yaml.load(fd)
-    if 'dci_cs_url' not in dci_conf['auth']:
-        dci_conf['auth']['dci_cs_url'] = 'https://api.distributed-ci.io'
     if 'key_filename' not in dci_conf:
         dci_conf['key_filename'] = os.path.expanduser('~/.ssh/id_rsa')
     if 'repository' not in dci_conf['mirror']:
@@ -50,8 +48,34 @@ def load_config(config_path):
 
 
 def get_dci_context(**args):
+    """Retrieve a DCI context from the dciclient. """
+
     args['user_agent'] = 'dci-agent-' + version.__version__
+    if 'dci_cs_url' not in args:
+        args['dci_cs_url'] = 'https://api.distributed-ci.io'
+
     return dci_context.build_dci_context(**args)
+
+
+def get_dci_job_data(ctx, **dci):
+    """Retrieve informations about the job to run. """
+
+    topic_id = dci_topic.get(ctx, dci['topic']).json()['topic']['id']
+    remoteci = dci_remoteci.get(ctx, dci['remoteci']).json()
+    remoteci_id = remoteci['remoteci']['id']
+
+    r = dci_job.schedule(ctx, remoteci_id, topic_id=topic_id)
+    if r.status_code == 412:
+        logging.info('Nothing to do')
+        exit(0)
+    elif r.status_code != 201:
+        logging.error('Unexpected code: %d' % r.status_code)
+        logging.error(r.text)
+        exit(1)
+
+    job_full_data = dci_job.get_full_data(ctx, ctx.last_job_id)
+
+    return job_full_data
 
 
 def init_undercloud_host(undercloud_ip, key_filename):
@@ -110,26 +134,18 @@ def main(argv=None):
 
     dci_conf = load_config(args.config)
     ctx = get_dci_context(**dci_conf['auth'])
+
     topic_name = args.topic if args.topic else dci_conf['topic']
-    topic = dci_topic.get(ctx, topic_name).json()['topic']
-    remoteci = dci_remoteci.get(ctx, dci_conf['remoteci']).json()['remoteci']
-    r = dci_job.schedule(ctx, remoteci['id'], topic_id=topic['id'])
-    if r.status_code == 412:
-        logging.info('Nothing to do')
-        exit(0)
-    elif r.status_code != 201:
-        logging.error('Unexpected code: %d' % r.status_code)
-        logging.error(r.text)
-        exit(1)
-    components = dci_job.get_components(
-        ctx, ctx.last_job_id).json()['components']
-    logging.debug(components)
+    cnf = {'topic': topic_name, 'remoteci': dci_conf['remoteci']}
+    job_data = get_dci_job_data(ctx, **cnf)
+
+    logging.debug(job_data['components'])
 
     try:
         prepare_local_mirror(ctx,
                              dci_conf['mirror']['directory'],
                              dci_conf['mirror']['url'],
-                             components)
+                             job_data['components'])
         dci_jobstate.create(ctx, 'pre-run', 'director node provisioning',
                             ctx.last_job_id)
         for c in dci_conf['hooks']['provisioning']:
@@ -151,7 +167,7 @@ def main(argv=None):
             ctx,
             undercloud_ip=dci_conf['undercloud_ip'],
             key_filename=dci_conf['key_filename'],
-            remoteci_id=remoteci['id'],
+            remoteci_id=job_data['remoteci']['id'],
             stack_name=dci_conf.get('stack_name', 'overcloud'))
         final_status = 'success'
         backtrace = ''
