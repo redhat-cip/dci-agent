@@ -15,7 +15,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from . import version
+from dci_agent import version
 from dciclient.v1.api import context as dci_context
 from dciclient.v1.api import file as dci_file
 from dciclient.v1.api import job as dci_job
@@ -50,7 +50,7 @@ def load_config(config_path):
 
 
 def get_dci_context(**args):
-    args['user_agent'] = 'dci-agent-' + version
+    args['user_agent'] = 'dci-agent-' + version.__version__
     return dci_context.build_dci_context(**args)
 
 
@@ -105,7 +105,7 @@ def main(argv=None):
     parser.add_argument('--topic')
     parser.add_argument('--config', default='/etc/dci/dci_agent.yaml')
     parser.add_argument('--version', action='version',
-                        version=('dci-agent %s' % version))
+                        version=('dci-agent %s' % version.__version__))
     args = parser.parse_args(argv)
 
     dci_conf = load_config(args.config)
