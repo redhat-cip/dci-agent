@@ -16,23 +16,27 @@
 # under the License.
 
 import codecs
-from pip.req import parse_requirements
+import os
 import setuptools
 
 from dci_agent import version
+
+
+def _get_requirements():
+    requirements_path = '%s/%s' % (os.path.dirname(os.path.abspath(__file__)),
+                                   'requirements.txt')
+    with open(requirements_path, 'r') as f:
+        requirements = f.read()
+        # remove the dependencies which comes from url source because
+        # it's not supported by install_requires
+        return [dep for dep in requirements.split('\n')
+                if not dep.startswith('-e')]
 
 
 def _get_readme():
     with codecs.open('README.rst', 'r', encoding='utf8') as f:
         return f.read()
 
-dep_requires = []
-dep_links = []
-for req_line in parse_requirements('requirements.txt', session=False):
-    if req_line.link:
-        dep_links.append(str(req_line.link.url))
-    else:
-        dep_requires.append(str(req_line.req))
 
 setuptools.setup(
     name='dci-agent',
@@ -43,8 +47,7 @@ setuptools.setup(
     url='https://github.com/redhat-openstack/dci-agent',
     description='DCI agent for DCI Control Server',
     long_description=_get_readme(),
-    install_requires=dep_requires,
-    dependency_links=dep_links,
+    install_requires=_get_requirements(),
     license='Apache v2.0',
     include_package_data=True,
     classifiers=[
