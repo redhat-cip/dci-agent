@@ -24,6 +24,9 @@ BuildRequires:  python-rpm-macros
 BuildRequires:  python2-rpm-macros
 BuildRequires:  systemd
 BuildRequires:  systemd-units
+BuildRequires:  python2-devel
+BuildRequires:  libffi-devel
+BuildRequires:  openssl-devel
 
 Requires:       python-prettytable
 Requires:       py-bcrypt
