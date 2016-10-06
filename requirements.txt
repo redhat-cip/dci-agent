@@ -4,5 +4,5 @@ requests>=2.6.0, <3.0
 PyYAML>=3.0, <4.0
 click>=3.3
 setuptools<=18.5
-git+git://github.com/redhat-openstack/python-tripleo-helper.git#egg=tripleo-helper
-git+git://github.com/redhat-cip/python-dciclient.git#egg=dciclient
+tripleo-helper
+dciclient
