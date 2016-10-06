@@ -43,6 +43,12 @@ name="Distributed CI - No upstream package - CentOS 7"
 baseurl=http://packages.distributed-ci.io/repos/extras/el/7/x86_64/
 gpgcheck=0
 enabled=1
+
+[centos-openstack-mitaka]
+name=CentOS-7 - OpenStack mitaka
+baseurl=http://mirror.centos.org/centos/7/cloud/x86_64/openstack-mitaka/
+gpgcheck=1
+enabled=1
 """
 # NOTE(spredzy) Add signing options
 #
