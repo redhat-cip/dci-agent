@@ -40,8 +40,8 @@ def _get_readme():
 
 setuptools.setup(
     name='dci-agent',
-    version=version,
-    packages=['dci_agent'],
+    version=version.__version__,
+    packages=setuptools.find_packages(),
     author='Distributed CI team',
     author_email='distributed-ci@redhat.com',
     url='https://github.com/redhat-openstack/dci-agent',
@@ -62,7 +62,7 @@ setuptools.setup(
     ],
     entry_points={
         'console_scripts': [
-            'dci-agent = dci_agent.dci_agent:main',
+            'dci-agent = dci_agent.shell:main',
         ],
     }
 )
