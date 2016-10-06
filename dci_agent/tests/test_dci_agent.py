@@ -56,6 +56,8 @@ def test_dci_agent_success(monkeypatch, dci_context, job_id):
                   shell=True),
         mock.call(dci_context, 'ansible-playbook overcloud.yaml',
                   shell=True),
+        mock.call(dci_context, 'ansible-playbook teardown.yaml',
+                  shell=True),
     ]
     mock_run_commands.assert_has_calls(calls)
     js = dci_jobstate.list(dci_context).json()['jobstates']
@@ -64,6 +66,56 @@ def test_dci_agent_success(monkeypatch, dci_context, job_id):
     assert comments[1] == 'director node provisioning'
     assert comments[2] == 'undercloud deployment'
     assert comments[3] == 'overcloud deployment'
+    assert comments[4] == 'teardown'
+    mock_run_tests.assert_called_with(dci_context,
+                                      key_filename='/home/dci/.ssh/id_rsa',
+                                      remoteci_id=ANY,
+                                      stack_name='lab2',
+                                      undercloud_ip='192.168.100.10')
+
+    assert js[-1]['status'] == 'success'
+    assert js[-1]['comment'] is None
+
+
+def test_dci_agent_success_no_teardown(monkeypatch, dci_context, job_id):
+    def return_context(**args):
+        return dci_context
+    mock_run_commands = mock.Mock()
+    mock_run_tests = mock.Mock()
+    monkeypatch.setattr(agent, 'get_dci_context', return_context)
+    monkeypatch.setattr(dciclient.v1.helper, 'run_command',
+                        mock_run_commands)
+    monkeypatch.setattr(tripleohelper.undercloud, 'Undercloud', mock.Mock())
+    monkeypatch.setattr(dciclient.v1.tripleo_helper, 'run_tests',
+                        mock_run_tests)
+    with pytest.raises(SystemExit):
+        agent.main(['--topic', 'topic_name', '--config',
+                    os.path.dirname(__file__) + '/dci_agent_no_teardown.yaml'])
+
+    calls = [
+        mock.call(dci_context, [
+            'rsync', '-av', '--hard-links',
+            'partner@rhos-mirror.distributed-ci.io:/srv/puddles/path1/',
+            './path1']),
+        mock.call(dci_context, [
+            'rsync', '-av', '--hard-links',
+            'partner@rhos-mirror.distributed-ci.io:/srv/puddles/somewhere2/',
+            './somewhere2']),
+        mock.call(dci_context, 'ansible-playbook provisioning.yaml',
+                  shell=True),
+        mock.call(dci_context, 'ansible-playbook undercloud.yaml',
+                  shell=True),
+        mock.call(dci_context, 'ansible-playbook overcloud.yaml',
+                  shell=True),
+    ]
+    mock_run_commands.assert_has_calls(calls)
+    js = dci_jobstate.list(dci_context).json()['jobstates']
+    comments = [i['comment'] for i in js]
+    assert comments[0] == 'refreshing local mirror'
+    assert comments[1] == 'director node provisioning'
+    assert comments[2] == 'undercloud deployment'
+    assert comments[3] == 'overcloud deployment'
+    assert 'teardown' not in comments
     mock_run_tests.assert_called_with(dci_context,
                                       key_filename='/home/dci/.ssh/id_rsa',
                                       remoteci_id=ANY,
