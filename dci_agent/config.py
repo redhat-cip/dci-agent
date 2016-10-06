@@ -49,26 +49,31 @@ def load_config(config_path=None):
     else:
         file_path = '/etc/dci/dci_agent.yaml'
 
-    file_path_content = open(file_path, 'r').read()
-    content = ''
-    if 'Include ' in file_path_content:
-        pathes = get_files_path(file_path)
-        with open(file_path, 'r') as f:
-            for line in f:
-                if 'Include ' not in line:
-                    content += line
-        if content:
-            config = yaml.load(content)
+    try:
+        file_path_content = open(file_path, 'r').read()
+        content = ''
+        if 'Include ' in file_path_content:
+            pathes = get_files_path(file_path)
+            with open(file_path, 'r') as f:
+                for line in f:
+                    if 'Include ' not in line:
+                        content += line
+            if content:
+                config = yaml.load(content)
+            else:
+                config = {}
+            for path in pathes:
+                config.update(yaml.load(open(path, 'r')))
         else:
-            config = {}
-        for path in pathes:
-            config.update(yaml.load(open(path, 'r')))
-    else:
-        config = yaml.load(open(file_path, 'r'))
+            config = yaml.load(open(file_path, 'r'))
 
-    if 'key_filename' not in config:
-        config['key_filename'] = os.path.expanduser('~/.ssh/id_rsa')
-    if 'mirror' in config and 'repository' not in config['mirror']:
-        config['mirror']['repository'] = '/var/www/html'
+        if 'key_filename' not in config:
+            config['key_filename'] = os.path.expanduser('~/.ssh/id_rsa')
+        if 'mirror' in config and 'repository' not in config['mirror']:
+            config['mirror']['repository'] = '/var/www/html'
+    except OSError:
+        raise
+    except yaml.scanner.ScannerError as e:
+        raise(e)
 
     return config
