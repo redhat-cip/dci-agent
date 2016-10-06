@@ -13,7 +13,7 @@ echo '%_gpg_name Distributed-CI' >> ~/.rpmmacros
 #
 rm -rf ${HOME}/rpmbuild
 rpmdev-setuptree
-sed -i "s,version = '\(.*\)',version = '0.0.${DATE}git${SHA}'," dci_agent/__init__.py
+sed -i "s,__version__ = '\(.*\)',__version__ = '0.0.${DATE}git${SHA}'," dci_agent/version.py
 python setup.py sdist
 cp -v dist/* ${HOME}/rpmbuild/SOURCES/
 cp -v dci_agent/systemd/* ${HOME}/rpmbuild/SOURCES/
