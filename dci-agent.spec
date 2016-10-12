@@ -19,7 +19,6 @@ Autoreq: 0
 
 BuildRequires:  postgresql-server
 BuildRequires:  python-psycopg2
-BuildRequires:  python-pip
 BuildRequires:  python-rpm-macros
 BuildRequires:  python2-rpm-macros
 BuildRequires:  systemd
@@ -27,6 +26,8 @@ BuildRequires:  systemd-units
 BuildRequires:  python2-devel
 BuildRequires:  libffi-devel
 BuildRequires:  openssl-devel
+BuildRequires:  python-tripleo-helper
+BuildRequires:  python2-dciclient
 
 Requires:       python-prettytable
 Requires:       py-bcrypt
@@ -37,8 +38,9 @@ Requires:       python-simplejson
 Requires:       python-six
 Requires:       python-configparser
 Requires:       python2-dciclient
-Requires:       python-setuptools
-Requires:       python-tripleo-helper
+# python2-setuptools is available herE:
+# http://mirror.centos.org/centos/7/cloud/x86_64/openstack-mitaka/common/
+Requires:       python-setuptools >= 22
 
 Requires(pre): shadow-utils
 Requires(post): systemd
