@@ -17,28 +17,28 @@ Source2:        %{name}.timer
 BuildArch:      noarch
 Autoreq: 0
 
+BuildRequires:  libffi-devel
+BuildRequires:  openssl-devel
 BuildRequires:  postgresql-server
+BuildRequires:  python-click
 BuildRequires:  python-psycopg2
-BuildRequires:  python-pip
 BuildRequires:  python-rpm-macros
+BuildRequires:  python-tripleo-helper
+BuildRequires:  python2-dciclient
+BuildRequires:  python2-devel
 BuildRequires:  python2-rpm-macros
 BuildRequires:  systemd
 BuildRequires:  systemd-units
-BuildRequires:  python2-devel
-BuildRequires:  libffi-devel
-BuildRequires:  openssl-devel
-
-Requires:       python-prettytable
+Requires:       PyYAML
 Requires:       py-bcrypt
 Requires:       python-click
-Requires:       PyYAML
+Requires:       python-configparser
+Requires:       python-prettytable
 Requires:       python-requests
+Requires:       python-setuptools
 Requires:       python-simplejson
 Requires:       python-six
-Requires:       python-configparser
 Requires:       python2-dciclient
-Requires:       python-setuptools
-Requires:       python-tripleo-helper
 
 Requires(pre): shadow-utils
 Requires(post): systemd
