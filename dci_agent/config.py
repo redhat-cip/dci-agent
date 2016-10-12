@@ -47,7 +47,7 @@ def load_config(config_path=None):
     elif os.getenv('DCI_AGENT_CONFIG'):
         file_path = os.getenv('DCI_AGENT_CONFIG')
     else:
-        file_path = '/etc/dci_agent.yaml'
+        file_path = '/etc/dci/dci_agent.yaml'
 
     try:
         file_path_content = open(file_path, 'r').read()

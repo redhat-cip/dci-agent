@@ -66,13 +66,13 @@ DCI agent for DCI control server.
 install -p -D -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
 install -p -D -m 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.timer
 
-install -p -D -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/dci_agent.conf
-install -p -D -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/ansible.conf.sample
-install -p -D -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/email.conf.sample
-install -p -D -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/file.conf.sample
-install -p -D -m 644 %{SOURCE7} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/irc.conf.sample
-install -p -D -m 644 %{SOURCE8} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/mirror.conf.sample
-install -p -D -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/dci_agent.conf.d/tests.conf.sample
+install -p -D -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf
+install -p -D -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/ansible.conf.sample
+install -p -D -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/email.conf.sample
+install -p -D -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/file.conf.sample
+install -p -D -m 644 %{SOURCE7} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/irc.conf.sample
+install -p -D -m 644 %{SOURCE8} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/mirror.conf.sample
+install -p -D -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/tests.conf.sample
 
 %check
 %{__python2} setup.py test
