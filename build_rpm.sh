@@ -32,16 +32,25 @@ for arch in fedora-23-x86_64 fedora-24-x86_64 epel-7-x86_64; do
     # our stuff
     head -n -1 /etc/mock/${arch}.cfg > ${HOME}/.mock/${arch}-with-dci-repo.cfg
     cat <<EOF >> ${HOME}/.mock/${arch}-with-dci-repo.cfg
+[dci]
+name=Distributed CI - CentOS 7
+baseurl=https://packages.distributed-ci.io/repos/current/el/7/x86_64/
+gpgcheck=1
+gpgkey=https://packages.distributed-ci.io/RPM-GPG-KEY-distributedci
+enabled=1
+
 [dci-devel]
 name="Distributed CI - Devel - CentOS 7"
 baseurl=http://packages.distributed-ci.io/repos/development/el/7/x86_64/
-gpgcheck=0
+gpgcheck=1
+gpgkey=https://packages.distributed-ci.io/RPM-GPG-KEY-distributedci
 enabled=1
 
 [dci-extras]
 name="Distributed CI - No upstream package - CentOS 7"
 baseurl=http://packages.distributed-ci.io/repos/extras/el/7/x86_64/
-gpgcheck=0
+gpgcheck=1
+gpgkey=https://packages.distributed-ci.io/RPM-GPG-KEY-distributedci
 enabled=1
 
 [centos-openstack-mitaka]
@@ -56,6 +65,10 @@ config_opts['plugin_conf']['sign_enable'] = True
 config_opts['plugin_conf']['sign_opts'] = {}
 config_opts['plugin_conf']['sign_opts']['cmd'] = 'rpmsign'
 config_opts['plugin_conf']['sign_opts']['opts'] = '--addsign %(rpms)s'
+config_opts['use_host_resolv'] = False
+config_opts['files']['etc/hosts'] = """
+127.0.0.1 pypi.python.org
+"""
 EOF
     mock -r ${HOME}/.mock/${arch}-with-dci-repo.cfg --no-clean --rebuild --resultdir=development/${rpath} ${HOME}/rpmbuild/SRPMS/${PROJ_NAME}*
 done
