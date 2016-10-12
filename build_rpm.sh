@@ -49,6 +49,24 @@ name=CentOS-7 - OpenStack mitaka
 baseurl=http://mirror.centos.org/centos/7/cloud/x86_64/openstack-mitaka/
 gpgcheck=0
 enabled=1
+
+[dci]
+name=Distributed CI - CentOS 7
+baseurl=https://packages.distributed-ci.io/repos/current/el/7/x86_64/
+gpgcheck=1
+gpgkey=https://packages.distributed-ci.io/RPM-GPG-KEY-distributedci
+
+[dci-extras]
+name=Distributed CI - No upstream package - CentOS 7
+baseurl=https://packages.distributed-ci.io/repos/extras/el/7/x86_64/
+gpgcheck=0
+gpgkey=https://packages.distributed-ci.io/RPM-GPG-KEY-distributedci
+
+[dci-devel]
+name=Distributed CI - Development Version - CentOS 7
+baseurl=https://packages.distributed-ci.io/repos/development/el/7/x86_64/
+gpgcheck=1
+gpgkey=https://packages.distributed-ci.io/RPM-GPG-KEY-distributedci
 """
 # NOTE(spredzy) Add signing options
 #
@@ -56,6 +74,9 @@ config_opts['plugin_conf']['sign_enable'] = True
 config_opts['plugin_conf']['sign_opts'] = {}
 config_opts['plugin_conf']['sign_opts']['cmd'] = 'rpmsign'
 config_opts['plugin_conf']['sign_opts']['opts'] = '--addsign %(rpms)s'
+config_opts['files']['etc/hosts'] = """
+127.0.0.1 pypi.python.org
+"""
 EOF
     mock -r ${HOME}/.mock/${arch}-with-dci-repo.cfg --no-clean --rebuild --resultdir=development/${rpath} ${HOME}/rpmbuild/SRPMS/${PROJ_NAME}*
 done
