@@ -64,4 +64,4 @@ class Email(plugin.Plugin):
 
 """ % (smtp_server, smtp_port, smtp_user, smtp_passwd, smtp_recpt, subj, msg)
 
-        self.run_playbook(playbook, context)
+        return self.run_playbook(playbook, context)

@@ -71,4 +71,4 @@ class Sosreport(plugin.Plugin):
       shell: %s
 """ % (host, state, host, command)
 
-            self.run_playbook(playbook, context)
+            return self.run_playbook(playbook, context)

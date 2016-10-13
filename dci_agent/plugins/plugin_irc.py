@@ -55,4 +55,4 @@ class Irc(plugin.Plugin):
            port='%s'
 """ % (chan, server, self.format(message, data, context), nick, port)
 
-        self.run_playbook(playbook, context)
+        return self.run_playbook(playbook, context)

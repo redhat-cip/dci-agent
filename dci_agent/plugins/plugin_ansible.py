@@ -68,4 +68,4 @@ class Ansible(plugin.Plugin):
             kwargs.update({'certification_id':
                            data['remoteci']['data']['certification_id']})
 
-        self.run_playbook(open(playbook, 'r').read(), context, **kwargs)
+        return self.run_playbook(open(playbook, 'r').read(), context, **kwargs)
