@@ -68,7 +68,7 @@ def load_config(config_path=None):
 
     if 'key_filename' not in config:
         config['key_filename'] = os.path.expanduser('~/.ssh/id_rsa')
-    if 'repository' not in config['mirror']:
+    if 'mirror' in config and 'repository' not in config['mirror']:
         config['mirror']['repository'] = '/var/www/html'
 
     return config
