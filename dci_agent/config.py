@@ -33,7 +33,7 @@ def get_files_path(file_path):
     for include in includes:
         path = include[8:-1]
         if path[0] != '/':
-            path = '/etc/%s' % path
+            path = '/etc/dci/%s' % path
         pathes += glob.glob(path)
 
     return pathes
@@ -46,8 +46,10 @@ def load_config(config_path=None):
         file_path = config_path
     elif os.getenv('DCI_AGENT_CONFIG'):
         file_path = os.getenv('DCI_AGENT_CONFIG')
-    else:
+    elif os.path.exists('/etc/dci/dci_agent.yaml'):
         file_path = '/etc/dci/dci_agent.yaml'
+    elif os.path.exists('/etc/dci/dci_agent.conf'):
+        file_path = '/etc/dci/dci_agent.conf'
 
     try:
         file_path_content = open(file_path, 'r').read()

@@ -39,7 +39,7 @@ def test_dci_agent_success(monkeypatch, dci_context, job_id):
                         mock_run_tests)
     with pytest.raises(SystemExit):
         agent.main(['--topic', 'topic_name', '--config',
-                    os.path.dirname(__file__) + '/dci_agent.yaml'])
+                    os.path.dirname(__file__) + '/dci_agent.conf'])
 
     calls = [
         mock.call(dci_context, [
@@ -142,7 +142,7 @@ def test_dci_agent_failure(monkeypatch, dci_context, job_id):
                         mock_run_tests)
     with pytest.raises(SystemExit):
         agent.main(['--topic', 'topic_name', '--config',
-                    os.path.dirname(__file__) + '/dci_agent.yaml'])
+                    os.path.dirname(__file__) + '/dci_agent.conf'])
 
     js = dci_jobstate.list(dci_context).json()['jobstates']
     assert js[-1]['status'] == 'failure'

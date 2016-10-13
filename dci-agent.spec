@@ -13,7 +13,7 @@ URL:            https://github.com/redhat-openstack/dci-agent
 Source0:        %{name}-%{version}.tar.gz
 Source1:        %{name}.service
 Source2:        %{name}.timer
-Source3:        dci_agent.yaml
+Source3:        dci_agent.conf
 Source4:        dci_agent.conf.d/ansible.conf.sample
 Source5:        dci_agent.conf.d/email.conf.sample
 Source6:        dci_agent.conf.d/file.conf.sample
