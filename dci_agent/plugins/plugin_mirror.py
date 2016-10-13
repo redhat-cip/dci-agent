@@ -64,4 +64,4 @@ class Mirror(plugin.Plugin):
         priority: 0
 """ % (state, repo, repo, data_path, dest, repo, repo, repo, dest)  # noqa
 
-            self.run_playbook(playbook, context)
+            return self.run_playbook(playbook, context)

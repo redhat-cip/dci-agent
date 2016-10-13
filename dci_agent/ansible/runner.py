@@ -130,3 +130,5 @@ class Runner(object):
         # set the custom callback plugin
         self._pbex._tqm._stdout_callback = self._results_callback
         self._pbex.run()
+
+        return self._pbex._tqm._stats

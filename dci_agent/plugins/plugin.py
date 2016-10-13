@@ -82,6 +82,8 @@ class Plugin(object):
         l_runner = runner.Runner(playbook='/tmp/%s.yml' % rand_string,
                                  dci_context=context,
                                  verbosity=0)
-        l_runner.run(job_id=context.last_job_id, **kwargs)
+        res = l_runner.run(job_id=context.last_job_id, **kwargs)
 
         os.remove('/tmp/%s.yml' % rand_string)
+
+        return len(res.failures)
