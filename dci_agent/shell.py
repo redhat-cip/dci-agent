@@ -125,8 +125,19 @@ def main(config=None, topic=None):
     dci_conf = conf.load_config(config)
     ctx = get_dci_context(**dci_conf['auth'])
 
-    topic_name = topic if topic else dci_conf['topic']
-    cnf = {'topic': topic_name, 'remoteci': dci_conf['remoteci']}
+    if topic:
+        topic_name = topic
+    elif 'topic' in dci_conf:
+        topic_name = dci_conf['topic']
+    elif 'dci' in dci_conf:
+        topic_name = dci_conf['dci']['topic']
+
+    if 'remoteci' in dci_conf:
+        remoteci_name = dci_conf['remoteci']
+    elif 'dci' in dci_conf:
+        remotci_name = dci_conf['dci']['remoteci']
+
+    cnf = {'topic': topic_name, 'remoteci': remoteci_name}
     job_data = get_dci_job_data(ctx, **cnf)
 
     logging.debug(job_data['components'])
@@ -138,7 +149,7 @@ def main(config=None, topic=None):
         RV = 0
         states = ['new', 'pre-run', 'running', 'post-run', 'success']
         for state in states:
-            if state in dci_conf['dci'] and RV != 0:
+            if state in dci_conf['dci'] and RV == 0:
                 for hook in dci_conf['dci'][state]:
                     dci_jobstate.create(ctx, state, 'Running %s hook' % hook,
                                         ctx.last_job_id)
