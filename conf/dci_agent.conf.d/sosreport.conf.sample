@@ -1,0 +1,11 @@
+sosreport:
+  hosts:
+    - 127.0.0.1
+  pre-run:
+    onlyplugins:
+      - yum
+  failure:
+    onlyplugins:
+      - puppet
+      - yum
+    
