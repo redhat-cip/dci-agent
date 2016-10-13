@@ -35,7 +35,7 @@ def load_plugin(hook):
         class_name = hook.capitalize()
         return getattr(loaded_module, hook.capitalize())
     except ImportError:
-        print("hook '%s' does not exist.")
+        print("hook '%s' does not exist." % hook)
         sys.exit(1)
     except AttributeError:
         print("Attribute '%s' of module '%s' does not exist." % (class_name,
