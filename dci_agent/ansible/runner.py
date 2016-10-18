@@ -19,10 +19,12 @@ from ansible.executor import playbook_executor
 from ansible.executor import task_queue_manager
 from ansible import inventory
 from ansible.parsing import dataloader
-from ansible.playbook import Playbook
 from ansible.plugins import callback
 from ansible import vars
 from dci_agent.ansible.dci_callback_plugin import CallbackModule as DciCallback
+
+
+import os
 
 
 class Options(object):
@@ -90,6 +92,9 @@ class Runner(object):
             self._options = Options()
             self._options.verbosity = verbosity
             self._options.connection = 'ssh'
+            self._options.module_path = '%s/library/' % os.path.dirname(
+                __file__
+            )
 
         self._loader = dataloader.DataLoader()
         self._variable_manager = vars.VariableManager()
@@ -106,11 +111,6 @@ class Runner(object):
 
         # Instantiate our Callback plugin
         self._results_callback = DciCallback(dci_context=dci_context)
-
-        self._playbook = Playbook.load(
-            playbook,
-            variable_manager=self._variable_manager,
-            loader=self._loader)
 
         self._pbex = playbook_executor.PlaybookExecutor(
             playbooks=[playbook],
