@@ -34,7 +34,7 @@ class Irc(plugin.Plugin):
     def __init__(self, conf):
         super(Irc, self).__init__(conf)
 
-    def run(self, state, data=None, context=None):
+    def run(self, state, data=None, context=None, auth=None):
         """Connect to the specified IRC server/channel and post a message. """
 
         message = self.conf[state]['message']

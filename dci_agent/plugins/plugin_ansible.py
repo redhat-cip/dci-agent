@@ -41,7 +41,7 @@ class Ansible(plugin.Plugin):
 
         return outputText
 
-    def run(self, state, data=None, context=None):
+    def run(self, state, data=None, context=None, auth=None):
         """Run ansible-playbook on the specified playbook. """
 
         playbook = None
