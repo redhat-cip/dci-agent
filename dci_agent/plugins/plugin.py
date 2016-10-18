@@ -55,7 +55,7 @@ class Plugin(object):
 
         return message
 
-    def run(self, state):
+    def run(self, state, data=None, context=None, auth=None):
         pass
 
     def fill_configuration(self, state, data, keys):

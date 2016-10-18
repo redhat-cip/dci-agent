@@ -31,7 +31,7 @@ class Context(plugin.Plugin):
     def __init__(self, conf):
         super(Context, self).__init__(conf)
 
-    def run(self, state, data=None, context=None):
+    def run(self, state, data=None, context=None, auth=None):
         """Upload configuration files. """
 
         if 'path' in self.conf:

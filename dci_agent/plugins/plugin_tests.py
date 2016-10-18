@@ -33,7 +33,7 @@ class Tests(plugin.Plugin):
     def __init__(self, conf):
         super(Tests, self).__init__(conf)
 
-    def run(self, state, data=None, context=None):
+    def run(self, state, data=None, context=None, auth=None):
         """Run the tripleo_helper.run_tests() method. """
 
         dci_tripleo_helper.run_tests(
