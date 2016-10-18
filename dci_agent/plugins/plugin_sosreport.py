@@ -35,7 +35,7 @@ class Sosreport(plugin.Plugin):
     def __init__(self, conf):
         super(Sosreport, self).__init__(conf)
 
-    def run(self, state, data=None, context=None):
+    def run(self, state, data=None, context=None, auth=None):
         """Run the sosreport command on the specified hosts."""
 
         self.fill_configuration(state, data, PARAMS)
@@ -69,6 +69,16 @@ class Sosreport(plugin.Plugin):
 
     - name: Run sosreport
       shell: %s
-""" % (host, state, host, command)
+      register: sosreport_output
+
+    - name: Upload sosreport
+      dci_upload:
+        file: "{{ sosreport_output.stdout_lines[-5].strip() }}"
+        dci_login: %s
+        dci_password: %s
+        dci_cs_url: %s
+        dci_status: %s
+        job_id: %s
+""" % (host, state, host, command, context.login, auth['dci_password'], context.dci_cs_api.replace('/api/v1', ''), state, context.last_job_id)  # noqa
 
             return self.run_playbook(playbook, context)

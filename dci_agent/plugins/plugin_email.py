@@ -36,7 +36,7 @@ class Email(plugin.Plugin):
     def __init__(self, conf):
         super(Email, self).__init__(conf)
 
-    def run(self, state, data=None, context=None):
+    def run(self, state, data=None, context=None, auth=None):
         """Send a notification email. """
 
         subject = self.conf[state]['subject']

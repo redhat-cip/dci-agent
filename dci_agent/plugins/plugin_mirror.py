@@ -30,7 +30,7 @@ class Mirror(plugin.Plugin):
     def __init__(self, conf):
         super(Mirror, self).__init__(conf)
 
-    def run(self, state, data=None, context=None):
+    def run(self, state, data=None, context=None, auth=None):
         """Sync remote repository to local mirror. """
 
         base_dir = self.conf.get('directory', '/srv/puddles')

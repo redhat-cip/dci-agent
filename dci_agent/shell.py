@@ -155,8 +155,10 @@ def main(config=None, topic=None):
                                         ctx.last_job_id)
                     # load the plugin associated to the hook and then run it
                     plugin_class = utils.load_plugin(hook)
-                    RV = plugin_class(dci_conf[hook]).run(state, data=job_data,
-                                                          context=ctx)
+                    RV = plugin_class(dci_conf[hook]).run(
+                        state, data=job_data, context=ctx,
+                        auth=dci_conf['auth']
+                    )
                     if RV != 0:
                         if 'failure' in dci_conf['dci']:
                             for hook in dci_conf['dci']['failure']:
@@ -167,7 +169,8 @@ def main(config=None, topic=None):
                                 # then run it
                                 plugin_class = utils.load_plugin(hook)
                                 plugin_class(dci_conf[hook]).run(
-                                    'failure', data=job_data, context=ctx
+                                    'failure', data=job_data, context=ctx,
+                                    auth=dci_conf['auth']
                                 )
                         else:
                             dci_jobstate.create(
