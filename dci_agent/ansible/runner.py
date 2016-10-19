@@ -92,6 +92,7 @@ class Runner(object):
             self._options = Options()
             self._options.verbosity = verbosity
             self._options.connection = 'ssh'
+            self._options.become_method = 'sudo'
             self._options.module_path = '%s/library/' % os.path.dirname(
                 __file__
             )
