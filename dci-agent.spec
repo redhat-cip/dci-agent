@@ -21,6 +21,7 @@ Source7:        dci_agent.conf.d/irc.conf.sample
 Source8:        dci_agent.conf.d/mirror.conf.sample
 Source9:        dci_agent.conf.d/tests.conf.sample
 Source10:       dci_agent.conf.d/sosreport.conf.sample
+Source11:       dci_agent.conf.d/tripleocollectlogs.conf.sample
 
 BuildArch:      noarch
 Autoreq: 0
@@ -75,6 +76,7 @@ install -p -D -m 644 %{SOURCE7} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/
 install -p -D -m 644 %{SOURCE8} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/mirror.conf.sample
 install -p -D -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/tests.conf.sample
 install -p -D -m 644 %{SOURCE10} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/sosreport.conf.sample
+install -p -D -m 644 %{SOURCE11} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/tripleocollectlogs.conf.sample
 
 %check
 %{__python2} setup.py test
