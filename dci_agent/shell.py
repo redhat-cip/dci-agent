@@ -34,6 +34,7 @@ import click
 import logging
 import os
 import os.path
+import subprocess
 import sys
 import traceback
 
@@ -199,7 +200,14 @@ def main(config=None, topic=None):
                                 ctx.last_job_id)
             for c in dci_conf['hooks']['provisioning']:
                 dci_helper.run_command(ctx, c, shell=True)
-            init_undercloud_host(dci_conf['undercloud_ip'],
+            if 'undercloud_ip_command' in dci_conf:
+                undercloud_ip = subprocess.Popen(
+                    dci_conf['undercloud_ip_command'],
+                    shell=True,
+                    stdout=subprocess.PIPE).stdout.read().rstrip()
+            else:
+                undercloud_ip = dci_conf['undercloud_ip']
+            init_undercloud_host(undercloud_ip,
                                  dci_conf['key_filename'])
             dci_jobstate.create(
                 ctx,
