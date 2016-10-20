@@ -28,19 +28,20 @@ import os
 
 
 class Options(object):
-    def __init__(self, verbosity=None, inventory=None, listhosts=None,
+    def __init__(self, verbosity=None, inventory='/etc/ansible/hosts',
                  subset=None, module_path=None, extra_vars=[], forks=5,
-                 ask_vault_pass=None, vault_password_files=None,
+                 ask_vault_pass=False, vault_password_files=None,
                  new_vault_password_file=None, output_file=None, tags='all',
                  skip_tags=None, one_line=None, tree=None, ask_sudo_pass=None,
-                 ask_su_pass=None, sudo=None, sudo_user=None, become=None,
-                 become_method=None, become_user=None, become_ask_pass=None,
-                 ask_pass=None, private_key_file=None, remote_user=None,
-                 connection=None, timeout=None, ssh_common_args=None,
-                 sftp_extra_args=None, scp_extra_args=None,
-                 ssh_extra_args=None, poll_interval=None, seconds=None,
-                 check=None, syntax=None, diff=None, force_handlers=None,
-                 flush_cache=None, listtasks=None, listtags=None):
+                 ask_su_pass=None, sudo=None, sudo_user=None, become=True,
+                 become_method='sudo', become_user='root',
+                 become_ask_pass=False, ask_pass=False, private_key_file=None,
+                 remote_user=None, connection='smart', timeout=10,
+                 ssh_common_args='', sftp_extra_args='', scp_extra_args='',
+                 ssh_extra_args='', poll_interval=15, seconds=0, check=False,
+                 syntax=False, diff=False, force_handlers=False,
+                 flush_cache=False, listhosts=False, listtasks=False,
+                 listtags=False):
         self.verbosity = verbosity
         self.inventory = inventory
         self.listhosts = listhosts
