@@ -32,6 +32,7 @@ import argparse
 import logging
 import os
 import os.path
+import subprocess
 import sys
 import traceback
 import yaml
@@ -136,6 +137,15 @@ def main(argv=None):
             dci_helper.run_command(ctx, c, shell=True)
         init_undercloud_host(dci_conf['undercloud_ip'],
                              dci_conf['key_filename'])
+        if 'undercloud_ip_command' in dci_conf:
+            undercloud_ip = subprocess.Popen(
+                dci_conf['undercloud_ip_command'],
+                shell=True,
+                stdout=subprocess.PIPE).stdout.read().rstrip()
+        else:
+            undercloud_ip = dci_conf['undercloud_ip']
+        # init_undercloud_host(undercloud_ip,
+        #                      dci_conf['key_filename'])
         dci_jobstate.create(
             ctx,
             'running',
@@ -149,7 +159,7 @@ def main(argv=None):
             dci_helper.run_command(ctx, c, shell=True)
         dci_tripleo_helper.run_tests(
             ctx,
-            undercloud_ip=dci_conf['undercloud_ip'],
+            undercloud_ip=undercloud_ip,
             key_filename=dci_conf['key_filename'],
             remoteci_id=remoteci['id'],
             stack_name=dci_conf.get('stack_name', 'overcloud'))
