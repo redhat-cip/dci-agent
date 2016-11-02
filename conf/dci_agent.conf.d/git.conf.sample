@@ -1,0 +1,4 @@
+git:
+  repo: https://github.com/redhat-cip/python-dciclient
+  version: 0.1a10
+  dest: /tmp/dciclient

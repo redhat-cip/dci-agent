@@ -23,6 +23,7 @@ Source9:        dci_agent.conf.d/tests.conf.sample
 Source10:       dci_agent.conf.d/sosreport.conf.sample
 Source11:       dci_agent.conf.d/tripleocollectlogs.conf.sample
 Source12:       dci_agent.conf.d/certification.conf.sample
+Source13:       dci_agent.conf.d/git.conf.sample
 
 BuildArch:      noarch
 Autoreq: 0
@@ -79,6 +80,7 @@ install -p -D -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/
 install -p -D -m 644 %{SOURCE10} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/sosreport.conf.sample
 install -p -D -m 644 %{SOURCE11} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/tripleocollectlogs.conf.sample
 install -p -D -m 644 %{SOURCE12} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/certification.conf.sample
+install -p -D -m 644 %{SOURCE13} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/git.conf.sample
 
 %check
 %{__python2} setup.py test
