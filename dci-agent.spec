@@ -49,6 +49,7 @@ Requires:       python-setuptools
 Requires:       python-simplejson
 Requires:       python-six
 Requires:       python2-dciclient
+Requires:       python2-tripleo-helper
 
 Requires(pre): shadow-utils
 Requires(post): systemd
