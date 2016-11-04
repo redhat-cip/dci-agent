@@ -48,17 +48,11 @@ gpgcheck=1
 gpgkey=https://packages.distributed-ci.io/RPM-GPG-KEY-distributedci
 enabled=1
 
-[dci-extras]
-name="Distributed CI - No upstream package - CentOS 7"
-baseurl=http://packages.distributed-ci.io/repos/extras/el/7/x86_64/
-gpgcheck=1
-gpgkey=https://packages.distributed-ci.io/RPM-GPG-KEY-distributedci
-enabled=1
-
 [centos-openstack-mitaka]
 name=CentOS-7 - OpenStack mitaka
 baseurl=http://mirror.centos.org/centos/7/cloud/x86_64/openstack-mitaka/
-gpgcheck=0
+gpgcheck=1
+gpgkey=https://raw.githubusercontent.com/openstack/puppet-openstack_extras/91fac8eab81d0ad071130887d72338a82c06a7f4/files/RPM-GPG-KEY-CentOS-SIG-Cloud
 enabled=1
 """
 # NOTE(spredzy) Add signing options
