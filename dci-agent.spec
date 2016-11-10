@@ -27,15 +27,12 @@ Source12:       dci_agent.conf.d/certification.conf.sample
 BuildArch:      noarch
 Autoreq: 0
 
-BuildRequires:  libffi-devel
-BuildRequires:  openssl-devel
 BuildRequires:  postgresql-server
 BuildRequires:  python-click
 BuildRequires:  python-psycopg2
 BuildRequires:  python-rpm-macros
 BuildRequires:  python-tripleo-helper
 BuildRequires:  python2-dciclient
-BuildRequires:  python2-devel
 BuildRequires:  python2-rpm-macros
 BuildRequires:  systemd
 BuildRequires:  systemd-units
