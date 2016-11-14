@@ -15,9 +15,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from dci_agent import config as conf
-from dci_agent import utils
-from dci_agent import version
+import config as conf
+import utils
+import version
+
 from dciclient.v1.api import component as dci_component
 from dciclient.v1.api import context as dci_context
 from dciclient.v1.api import file as dci_file
