@@ -95,20 +95,20 @@ def client(server, db_provisioning):
 
 @pytest.fixture
 def dci_context(server, db_provisioning):
-    test_context = api.context.DciContext('http://dci_server.com',
+    test_context = api.context.DciContext('http://dciserver.com',
                                           'admin', 'admin')
     flask_adapter = utils.FlaskHTTPAdapter(server.test_client())
-    test_context.session.mount('http://dci_server.com', flask_adapter)
+    test_context.session.mount('http://dciserver.com', flask_adapter)
     return test_context
 
 
 @pytest.fixture
 def dci_context_other_user_agent(server, db_provisioning):
-    test_context = api.context.DciContext('http://dci_server.com',
+    test_context = api.context.DciContext('http://dciserver.com',
                                           'admin', 'admin',
                                           user_agent='myagent-0.1')
     flask_adapter = utils.FlaskHTTPAdapter(server.test_client())
-    test_context.session.mount('http://dci_server.com', flask_adapter)
+    test_context.session.mount('http://dciserver.com', flask_adapter)
     return test_context
 
 
