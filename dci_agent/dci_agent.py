@@ -37,6 +37,8 @@ import sys
 import traceback
 import yaml
 
+from paramiko import ssh_exception
+
 
 def load_config(config_path):
     with open(config_path, 'r') as fd:
@@ -56,16 +58,24 @@ def get_dci_context(**args):
 
 
 def init_undercloud_host(undercloud_ip, key_filename):
-    # Waiting for the undercloud host to be back
-    undercloud = tripleohelper.undercloud.Undercloud(
-        hostname=undercloud_ip,
-        user='stack',
-        key_filename=key_filename)
-    # copy our public SSH key to be able later to run our tests
-    undercloud.run('sudo mkdir -p /root/.ssh', retry=600, user='stack')
-    undercloud.run('sudo chmod 700 /root/.ssh', user='stack')
-    undercloud.run('sudo cp /home/stack/.ssh/authorized_keys /root/.ssh/',
-                   user='stack')
+    try:
+        # Waiting for the undercloud host to be back
+        undercloud = tripleohelper.undercloud.Undercloud(
+            hostname=undercloud_ip,
+            user='root',
+            key_filename=key_filename)
+    except ssh_exception.AuthenticationException:
+        logging.info('Could not connect to undercloud as root, trying using' +
+                     ' stack user')
+        undercloud = tripleohelper.undercloud.Undercloud(
+            hostname=undercloud_ip,
+            user='stack',
+            key_filename=key_filename)
+        # copy our public SSH key to be able later to run our tests
+        undercloud.run('sudo mkdir -p /root/.ssh', retry=600, user='stack')
+        undercloud.run('sudo chmod 700 /root/.ssh', user='stack')
+        undercloud.run('sudo cp /home/stack/.ssh/authorized_keys /root/.ssh/',
+                       user='stack')
 
 
 def prepare_local_mirror(ctx, mirror_location, mirror_url, components):
