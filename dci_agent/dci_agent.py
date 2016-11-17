@@ -26,10 +26,6 @@ from dciclient.v1.api import topic as dci_topic
 from dciclient.v1 import helper as dci_helper
 from dciclient.v1 import tripleo_helper as dci_tripleo_helper
 
-import tripleohelper.server
-import tripleohelper.undercloud
-
-
 import argparse
 import logging
 import os
@@ -56,19 +52,6 @@ def load_config(config_path):
 def get_dci_context(**args):
     args['user_agent'] = 'dci-agent-' + version
     return dci_context.build_dci_context(**args)
-
-
-def init_undercloud_host(undercloud_ip, key_filename):
-    # Waiting for the undercloud host to be back
-    undercloud = tripleohelper.undercloud.Undercloud(
-        hostname=undercloud_ip,
-        user='stack',
-        key_filename=key_filename)
-    # copy our public SSH key to be able later to run our tests
-    undercloud.run('sudo mkdir -p /root/.ssh', retry=600, user='stack')
-    undercloud.run('sudo chmod 700 /root/.ssh', user='stack')
-    undercloud.run('sudo cp /home/stack/.ssh/authorized_keys /root/.ssh/',
-                   user='stack')
 
 
 def prepare_local_mirror(ctx, mirror_location, mirror_url, components):
@@ -150,8 +133,6 @@ def main(argv=None):
                 stdout=subprocess.PIPE).stdout.read().rstrip()
         else:
             undercloud_ip = dci_conf['undercloud_ip']
-        init_undercloud_host(undercloud_ip,
-                             dci_conf['key_filename'])
         dci_jobstate.create(
             ctx,
             'running',
