@@ -126,6 +126,11 @@ priority=0
                 path='/' + ctx.last_job_id + '/' + project_name))
 
 
+def clean_local_mirror(ctx, mirror_location):
+    os.unlink(mirror_location + '/' + ctx.last_job_id + '.repo')
+    shutil.rmtree(mirror_location + '/' + ctx.last_job_id)
+
+
 @click.command()
 @click.option('--topic', envvar='DCI_AGENT_TOPIC', required=False,
               help="Topic the agent apply to.")
@@ -223,6 +228,7 @@ def main(config=None, topic=None):
                 key_filename=dci_conf['key_filename'],
                 remoteci_id=job_data['remoteci']['id'],
                 stack_name=dci_conf.get('stack_name', 'overcloud'))
+            clean_local_mirror(ctx, dci_conf['mirror']['directory'])
             final_status = 'success'
             backtrace = ''
             msg = ''
