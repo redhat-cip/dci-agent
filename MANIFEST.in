@@ -1,2 +1,17 @@
 include README.rst
 include requirements.txt
+include conf/dci_agent.conf
+include dci_agent/dci_agent.conf
+include dci_agent/tests/dci_agent.conf
+include dci_agent/tests/dci_agent_no_teardown.yaml
+include conf/dci_agent.conf.d/file.conf.sample
+include conf/dci_agent.conf.d/sosreport.conf.sample
+include conf/dci_agent.conf.d/certification.conf.sample
+include conf/dci_agent.conf.d/tripleocollectlogs.conf.sample
+include conf/dci_agent.conf.d/tests.conf.sample
+include conf/dci_agent.conf.d/email.conf.sample
+include conf/dci_agent.conf.d/mirror.conf.sample
+include conf/dci_agent.conf.d/ansible.conf.sample
+include conf/dci_agent.conf.d/irc.conf.sample
+include dci_agent/systemd/dci-agent.service
+include dci_agent/systemd/dci-agent.timer
