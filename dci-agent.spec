@@ -1,35 +1,22 @@
-%if 0%{?fedora}
-%global with_python3 1
-%endif
-
 Name:           dci-agent
 Version:        0.0.VERS
 Release:        1%{?dist}
-
 Summary:        DCI Agent for DCI control server
 License:        ASL 2.0
 URL:            https://github.com/redhat-openstack/dci-agent
-
 Source0:        %{name}-%{version}.tar.gz
-Source1:        %{name}.service
-Source2:        %{name}.timer
-Source3:        dci_agent.conf
-Source4:        dci_agent.conf.d/ansible.conf.sample
-Source5:        dci_agent.conf.d/email.conf.sample
-Source6:        dci_agent.conf.d/file.conf.sample
-Source7:        dci_agent.conf.d/irc.conf.sample
-Source8:        dci_agent.conf.d/mirror.conf.sample
-Source9:        dci_agent.conf.d/tests.conf.sample
-Source10:       dci_agent.conf.d/sosreport.conf.sample
-Source11:       dci_agent.conf.d/tripleocollectlogs.conf.sample
-Source12:       dci_agent.conf.d/certification.conf.sample
-
 BuildArch:      noarch
-Autoreq: 0
 
+BuildRequires:  dci-api
 BuildRequires:  postgresql-server
+# pifpaf runs: pg_config --bindir
+BuildRequires:  postgresql-devel
 BuildRequires:  python-click
+BuildRequires:  python-dciclient
+BuildRequires:  python-mock
+BuildRequires:  python-pifpaf
 BuildRequires:  python-psycopg2
+BuildRequires:  python-pytest
 BuildRequires:  python-rpm-macros
 BuildRequires:  python-tripleo-helper
 BuildRequires:  python2-dciclient
@@ -64,22 +51,17 @@ DCI agent for DCI control server.
 
 %install
 %py2_install
-install -p -D -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
-install -p -D -m 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.timer
-
-install -p -D -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf
-install -p -D -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/ansible.conf.sample
-install -p -D -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/email.conf.sample
-install -p -D -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/file.conf.sample
-install -p -D -m 644 %{SOURCE7} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/irc.conf.sample
-install -p -D -m 644 %{SOURCE8} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/mirror.conf.sample
-install -p -D -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/tests.conf.sample
-install -p -D -m 644 %{SOURCE10} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/sosreport.conf.sample
-install -p -D -m 644 %{SOURCE11} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/tripleocollectlogs.conf.sample
-install -p -D -m 644 %{SOURCE12} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/certification.conf.sample
+install -p -D -m 644 dci_agent/systemd/dci-agent.service %{buildroot}%{_unitdir}/%{name}.service
+install -p -D -m 644 dci_agent/systemd/dci-agent.timer %{buildroot}%{_unitdir}/%{name}.timer
+install -p -D -m 644 dci_agent/dci_agent.conf %{buildroot}%{_sysconfdir}/dci/dci_agent.conf
+cp -rv conf/dci_agent.conf.d %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d
+chmod 755 %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d
+find %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d -type f -exec chmod 644 {} \;
 
 %check
-%{__python2} setup.py test
+PYTHONPATH=%{buildroot}%{python2_sitelib} \
+          DCI_SETTINGS_MODULE="dci_agent.tests.settings" \
+          pifpaf run postgresql -- py.test -v dci_agent/tests
 
 %pre
 getent group %{name} >/dev/null || groupadd -r %{name}
