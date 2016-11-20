@@ -54,8 +54,7 @@ class mocked_store_engine(object):
         file_path = '/tmp/swift/' + filename
         os.makedirs(os.path.dirname(file_path))
         with open(file_path, 'wb') as fd:
-            for i in iterable:
-                fd.write(i)
+            fd.write(iterable)
         self.files[filename] = {
             'etag': 'boby',
             'content-type': 'application/octet-stream',
