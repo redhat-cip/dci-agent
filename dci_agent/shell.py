@@ -177,13 +177,6 @@ def main(config=None, topic=None):
     # This code is run by default except if a 'dci' section is specified in
     # the configuration file
     else:
-        if 'undercloud_ip_command' in dci_conf:
-            undercloud_ip = subprocess.Popen(
-                dci_conf['undercloud_ip_command'],
-                shell=True,
-                stdout=subprocess.PIPE).stdout.read().rstrip()
-        else:
-            undercloud_ip = dci_conf['undercloud_ip']
         try:
             prepare_local_mirror(ctx,
                                  dci_conf['mirror']['directory'],
@@ -204,6 +197,13 @@ def main(config=None, topic=None):
                                 ctx.last_job_id)
             for c in dci_conf['hooks']['overcloud']:
                 dci_helper.run_command(ctx, c, shell=True)
+            if 'undercloud_ip_command' in dci_conf:
+                undercloud_ip = subprocess.Popen(
+                    dci_conf['undercloud_ip_command'],
+                    shell=True,
+                    stdout=subprocess.PIPE).stdout.read().rstrip()
+            else:
+                undercloud_ip = dci_conf['undercloud_ip']
             dci_tripleo_helper.run_tests(
                 ctx,
                 undercloud_ip=undercloud_ip,
