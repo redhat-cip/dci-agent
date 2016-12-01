@@ -150,6 +150,11 @@ def main(config=None, topic=None):
 
     logging.debug(job_data['components'])
 
+    prepare_local_mirror(ctx,
+                         dci_conf['mirror']['directory'],
+                         dci_conf['mirror']['url'],
+                         job_data['components'])
+
     # This is the core of the v2 of the agent
     # It is triggered only if a 'dci' section is present in the
     # configuration file.
@@ -190,16 +195,13 @@ def main(config=None, topic=None):
         if RV == 0 and 'success' not in dci_conf['dci']:
             dci_jobstate.create(ctx, 'success', 'Successfully ran the agent',
                                 ctx.last_job_id)
+        clean_local_mirror(ctx, dci_conf['mirror']['directory'])
 
     # This is the core of the v1 of the agent
     # This code is run by default except if a 'dci' section is specified in
     # the configuration file
     else:
         try:
-            prepare_local_mirror(ctx,
-                                 dci_conf['mirror']['directory'],
-                                 dci_conf['mirror']['url'],
-                                 job_data['components'])
             dci_jobstate.create(ctx, 'pre-run', 'director node provisioning',
                                 ctx.last_job_id)
             for c in dci_conf['hooks']['provisioning']:
