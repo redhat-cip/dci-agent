@@ -41,6 +41,7 @@ class Context(plugin.Plugin):
                     dci_file.create(context=context, name=f,
                                     content=content,
                                     job_id=context.last_job_id)
+                    return 0
                 except OSError as e:
                     raise(e)
                 except IOError as e:
