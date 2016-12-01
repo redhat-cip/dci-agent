@@ -209,7 +209,8 @@ def remoteci_id(dci_context):
 @pytest.fixture
 def component_id(dci_context, topic_id):
     kwargs = {'name': 'component1', 'type': 'git_review',
-              'data': {'component': 'component'}, 'topic_id': topic_id}
+              'data': {'component': 'component'}, 'topic_id': topic_id,
+              'export_control': True}
 
     component = api.component.create(dci_context, **kwargs).json()
     return component['component']['id']
@@ -249,7 +250,7 @@ def job_id(dci_context, tarball_factory):
     kwargs = {'name': 'hihi', 'type': 'type_1', 'topic_id': topic['id'],
               'canonical_project_name': 'component_1',
               'data': {'component': 'component1', 'path': 'path1',
-                       'repo_name': 'a name'}}
+                       'repo_name': 'a name'}, 'export_control': True}
     new_cpt = api.component.create(dci_context, **kwargs).json()['component']
     api.component.file_upload(
         dci_context,
@@ -259,7 +260,7 @@ def job_id(dci_context, tarball_factory):
     kwargs = {'name': 'haha', 'type': 'type_2', 'topic_id': topic['id'],
               'canonical_project_name': 'component_2',
               'data': {'component': 'component2', 'path': 'somewhere2',
-                       'repo_name': 'b name'}}
+                       'repo_name': 'b name'}, 'export_control': True}
     new_cpt = api.component.create(dci_context, **kwargs).json()['component']
     api.component.file_upload(
         dci_context,
