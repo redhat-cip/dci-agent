@@ -156,6 +156,19 @@ def main(config=None, topic=None):
     if 'dci' in dci_conf:
         RV = 0
         states = ['new', 'pre-run', 'running', 'post-run', 'success']
+        # (spredzy): Make a plugin out of the prepare_local_mirror
+        # function
+        try:
+            prepare_local_mirror(ctx,
+                                 dci_conf['mirror']['directory'],
+                                 dci_conf['mirror']['url'],
+                                 job_data['components'])
+        except Exception as e:
+            RV = 1
+            dci_jobstate.create(ctx, 'failure',
+                                'Failure during the local mirror preparation',
+                                ctx.last_job_id)
+
         for state in states:
             if state in dci_conf['dci'] and RV == 0:
                 for hook in dci_conf['dci'][state]:
@@ -190,6 +203,7 @@ def main(config=None, topic=None):
         if RV == 0 and 'success' not in dci_conf['dci']:
             dci_jobstate.create(ctx, 'success', 'Successfully ran the agent',
                                 ctx.last_job_id)
+        clean_local_mirror(ctx, dci_conf['mirror']['directory'])
 
     # This is the core of the v1 of the agent
     # This code is run by default except if a 'dci' section is specified in
