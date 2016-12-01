@@ -18,11 +18,10 @@ Source4:        dci_agent.conf.d/ansible.conf.sample
 Source5:        dci_agent.conf.d/email.conf.sample
 Source6:        dci_agent.conf.d/file.conf.sample
 Source7:        dci_agent.conf.d/irc.conf.sample
-Source8:        dci_agent.conf.d/mirror.conf.sample
-Source9:        dci_agent.conf.d/tests.conf.sample
-Source10:       dci_agent.conf.d/sosreport.conf.sample
-Source11:       dci_agent.conf.d/tripleocollectlogs.conf.sample
-Source12:       dci_agent.conf.d/certification.conf.sample
+Source8:        dci_agent.conf.d/tests.conf.sample
+Source9:        dci_agent.conf.d/sosreport.conf.sample
+Source10:       dci_agent.conf.d/tripleocollectlogs.conf.sample
+Source11:       dci_agent.conf.d/certification.conf.sample
 
 BuildArch:      noarch
 Autoreq: 0
@@ -72,11 +71,10 @@ install -p -D -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/
 install -p -D -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/email.conf.sample
 install -p -D -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/file.conf.sample
 install -p -D -m 644 %{SOURCE7} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/irc.conf.sample
-install -p -D -m 644 %{SOURCE8} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/mirror.conf.sample
-install -p -D -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/tests.conf.sample
-install -p -D -m 644 %{SOURCE10} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/sosreport.conf.sample
-install -p -D -m 644 %{SOURCE11} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/tripleocollectlogs.conf.sample
-install -p -D -m 644 %{SOURCE12} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/certification.conf.sample
+install -p -D -m 644 %{SOURCE8} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/tests.conf.sample
+install -p -D -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/sosreport.conf.sample
+install -p -D -m 644 %{SOURCE10} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/tripleocollectlogs.conf.sample
+install -p -D -m 644 %{SOURCE11} %{buildroot}%{_sysconfdir}/dci/dci_agent.conf.d/certification.conf.sample
 
 %check
 %{__python2} setup.py test
