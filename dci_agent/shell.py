@@ -115,6 +115,24 @@ def clean_local_mirror(ctx, mirror_location):
     shutil.rmtree(mirror_location + '/' + ctx.last_job_id)
 
 
+def get_topic_and_remoteci(dci_conf):
+    """Return the Topic and RemoteCI details."""
+
+    if 'dci' in dci_conf:
+        topic_name = dci_conf['dci']['topic']
+        remoteci_name = dci_conf['dci']['remoteci']
+    else:
+        remoteci_name = dci_conf['remoteci']
+        if 'topic' in dci_conf:
+            topic_name = dci_conf['topic']
+        else:
+            topic_name = topic
+
+    return {
+        'topic': topic_name,
+        'remoteci': remoteci_name,
+    }
+
 @click.command()
 @click.option('--topic', envvar='DCI_AGENT_TOPIC', required=False,
               help="Topic the agent apply to.")
@@ -126,8 +144,7 @@ def main(config=None, topic=None):
     dci_conf = conf.load_config(config)
     ctx = get_dci_context(**dci_conf['auth'])
 
-    topic_name = topic if topic else dci_conf['topic']
-    cnf = {'topic': topic_name, 'remoteci': dci_conf['remoteci']}
+    cnf = get_topic_and_remoteci(dci_conf)
     job_data = get_dci_job_data(ctx, **cnf)
 
     logging.debug(job_data['components'])
@@ -139,7 +156,7 @@ def main(config=None, topic=None):
         RV = 0
         states = ['new', 'pre-run', 'running', 'post-run', 'success']
         for state in states:
-            if state in dci_conf['dci'] and RV != 0:
+            if state in dci_conf['dci'] and RV == 0:
                 for hook in dci_conf['dci'][state]:
                     dci_jobstate.create(ctx, state, 'Running %s hook' % hook,
                                         ctx.last_job_id)
