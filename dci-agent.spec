@@ -5,6 +5,7 @@ Summary:        DCI Agent for DCI control server
 License:        ASL 2.0
 URL:            https://github.com/redhat-openstack/dci-agent
 Source0:        %{name}-%{version}.tar.gz
+
 BuildArch:      noarch
 
 BuildRequires:  dci-api
