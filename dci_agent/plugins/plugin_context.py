@@ -45,3 +45,4 @@ class Context(plugin.Plugin):
                     raise(e)
                 except IOError as e:
                     raise(e)
+        return 0
