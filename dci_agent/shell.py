@@ -242,7 +242,6 @@ def main(config=None, topic=None):
                 key_filename=dci_conf['key_filename'],
                 remoteci_id=job_data['remoteci']['id'],
                 stack_name=dci_conf.get('stack_name', 'overcloud'))
-            clean_local_mirror(ctx, dci_conf['mirror']['directory'])
             final_status = 'success'
             backtrace = ''
             msg = ''
@@ -286,4 +285,7 @@ def main(config=None, topic=None):
                 backtrace,
                 mime='text/plain',
                 jobstate_id=ctx.last_jobstate_id)
+
+        clean_local_mirror(ctx, dci_conf['mirror']['directory'])
+
         sys.exit(0 if final_status == 'success' else 1)
