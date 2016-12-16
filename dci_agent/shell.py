@@ -82,6 +82,8 @@ gpgcheck=0
 priority=0
 
 """
+    if not os.path.exists(mirror_location):
+        os.makedirs(mirror_location)
     if os.path.exists(mirror_location + '/current'):
         shutil.rmtree(mirror_location + '/current')
     dci_jobstate.create(ctx, 'pre-run', 'refreshing local mirror',
