@@ -23,6 +23,7 @@ BuildRequires:  python2-dciclient
 BuildRequires:  python2-rpm-macros
 BuildRequires:  systemd
 BuildRequires:  systemd-units
+Requires:       ansible
 Requires:       PyYAML
 Requires:       py-bcrypt
 Requires:       python-click
