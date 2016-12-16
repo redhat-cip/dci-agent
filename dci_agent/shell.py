@@ -83,6 +83,9 @@ gpgcheck=0
 priority=0
 
 """
+    if not os.path.exists(mirror_location):
+        logging.error('%s doesn\'t exist' % mirror_location)
+        exit(1)
     if os.path.exists(mirror_location + '/current'):
         shutil.rmtree(mirror_location + '/current')
     dci_jobstate.create(ctx, 'pre-run', 'refreshing local mirror',
