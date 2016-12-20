@@ -1,0 +1,39 @@
+- git:
+    repo: git://foosball.example.org/path/to/repo.git
+    dest: /srv/checkout
+    version: release-0.22
+- dci_new_job:
+    login: foo
+    password: bar
+    remoteci: bob
+    register: dci_job
+- package:
+    name: httpd
+- service:
+    name: httpd
+    enabled: True
+    state: True
+- get_url:
+    url: {{ dci_job.component_url }}
+    dest: /var/www/html/{{ dci_job.component_name }}.tar.gz
+- unarchive:
+    src: /var/www/html/{{ dci_job.component_name }}.tar.gz
+    dest: /var/www/html/current
+- template:
+    src: repo.j2
+    dest: /var/www/html/dci.repo
+    mode: 0644
+# by using notify/handler, this give use the ability to use
+# whatever we want to send extra notification (e.g: mail or jabber)
+block:
+  - notify: pre-run
+    - command: prepare environment
+  - notify: running
+    - command: deploying the undercloud
+  - notify: running
+    - command: deploying the overcloud
+rescue:
+  - notify: deployment failure
+- dci_run_tests:
+    undercloud_ip: 192.168.1.1
+    ssh_key: /root/.ssh/id_rsa
