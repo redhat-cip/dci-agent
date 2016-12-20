@@ -16,3 +16,4 @@ hooks:
     - ansible-playbook undercloud.yaml
   overcloud:
     - ansible-playbook overcloud.yaml
+log_path: /somewhere/*.log
