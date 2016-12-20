@@ -30,6 +30,7 @@ from dciclient.v1 import helper as dci_helper
 from dciclient.v1 import tripleo_helper as dci_tripleo_helper
 
 import click
+import glob
 import logging
 import os
 import os.path
@@ -87,6 +88,7 @@ priority=0
     dci_jobstate.create(ctx, 'pre-run', 'refreshing local mirror',
                         ctx.last_job_id)
     repo_dest = mirror_location + '/' + ctx.last_job_id
+    print(mirror_location + '/' + ctx.last_job_id + '.repo')
     with open(mirror_location + '/' + ctx.last_job_id + '.repo', 'w') as f:
         for c in components:
             tarball_dest = mirror_location + '/' + c['id'] + '.tar'
@@ -287,5 +289,16 @@ def main(config=None, topic=None):
                 jobstate_id=ctx.last_jobstate_id)
 
         clean_local_mirror(ctx, dci_conf['mirror']['directory'])
+
+        for log_file in glob.glob(dci_conf['log_path']):
+            logging.info('Uploading: %s' % log_file)
+            with open(log_file, 'r') as f:
+                print(dci_file.create(
+                    ctx,
+                    log_file,
+                    f.read(),
+                    mime='text/plain',
+                    job_id=ctx.last_job_id).text)
+
 
         sys.exit(0 if final_status == 'success' else 1)
