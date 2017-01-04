@@ -67,19 +67,19 @@ def test_dci_agent_success(monkeypatch, dci_context, job_id):
     mock_run_commands.assert_has_calls(calls)
     js = dci_jobstate.list(dci_context).json()['jobstates']
     comments = [i['comment'] for i in js]
-    assert comments[0] == 'refreshing local mirror'
-    assert comments[1] == 'director node provisioning'
-    assert comments[2] == 'undercloud deployment'
-    assert comments[3] == 'overcloud deployment'
-    assert comments[4] == 'teardown'
+    assert comments[5] == 'refreshing local mirror'
+    assert comments[4] == 'director node provisioning'
+    assert comments[3] == 'undercloud deployment'
+    assert comments[2] == 'overcloud deployment'
+    assert comments[1] == 'teardown'
     mock_run_tests.assert_called_with(dci_context,
                                       key_filename='/home/dci/.ssh/id_rsa',
                                       remoteci_id=ANY,
                                       stack_name='lab2',
                                       undercloud_ip='192.168.100.10')
 
-    assert js[-1]['status'] == 'success'
-    assert js[-1]['comment'] is None
+    assert js[0]['status'] == 'success'
+    assert js[0]['comment'] is None
 
 
 def test_dci_agent_success_no_teardown(monkeypatch, dci_context, job_id):
@@ -108,10 +108,10 @@ def test_dci_agent_success_no_teardown(monkeypatch, dci_context, job_id):
     mock_run_commands.assert_has_calls(calls)
     js = dci_jobstate.list(dci_context).json()['jobstates']
     comments = [i['comment'] for i in js]
-    assert comments[0] == 'refreshing local mirror'
-    assert comments[1] == 'director node provisioning'
+    assert comments[4] == 'refreshing local mirror'
+    assert comments[3] == 'director node provisioning'
     assert comments[2] == 'undercloud deployment'
-    assert comments[3] == 'overcloud deployment'
+    assert comments[1] == 'overcloud deployment'
     assert 'teardown' not in comments
     mock_run_tests.assert_called_with(dci_context,
                                       key_filename='/home/dci/.ssh/id_rsa',
@@ -119,8 +119,8 @@ def test_dci_agent_success_no_teardown(monkeypatch, dci_context, job_id):
                                       stack_name='lab2',
                                       undercloud_ip='192.168.100.10')
 
-    assert js[-1]['status'] == 'success'
-    assert js[-1]['comment'] is None
+    assert js[0]['status'] == 'success'
+    assert js[0]['comment'] is None
 
 
 def test_dci_agent_failure(monkeypatch, dci_context, job_id):
@@ -142,11 +142,11 @@ def test_dci_agent_failure(monkeypatch, dci_context, job_id):
                     os.path.dirname(__file__) + '/dci_agent.conf'])
 
     js = dci_jobstate.list(dci_context).json()['jobstates']
-    assert js[-1]['status'] == 'failure'
-    assert js[-1]['comment'] == 'booom'
+    assert js[0]['status'] == 'failure'
+    assert js[0]['comment'] == 'booom'
 
     # the where filter does not work yet:
     #   I1f0df01f813efae75f6e0e75a3861d2d4ba5694a
     files = dci_file.list(dci_context).json()['files']
-    content = dci_file.content(dci_context, files[-1]['id'])
+    content = dci_file.content(dci_context, files[0]['id'])
     assert 'most recent call last' in content.text
