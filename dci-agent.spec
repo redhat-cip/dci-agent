@@ -14,7 +14,7 @@ BuildRequires:  postgresql-devel
 BuildRequires:  python-click
 BuildRequires:  python-dciclient
 BuildRequires:  python-mock
-BuildRequires:  python-pifpaf
+BuildRequires:  python2-pifpaf
 BuildRequires:  python-psycopg2
 BuildRequires:  python-pytest
 BuildRequires:  python-rpm-macros
