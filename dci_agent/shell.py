@@ -54,7 +54,10 @@ def get_dci_context(**args):
 def get_dci_job_data(ctx, **dci):
     """Retrieve informations about the job to run. """
 
-    topic_id = dci_topic.get(ctx, dci['topic']).json()['topic']['id']
+    topic_id = dci_topic.list(
+        ctx,
+        where='name:' + dci['topic'],
+        limit=1).json()['topics'][0]['id']
     remoteci = dci_remoteci.get(ctx, dci['remoteci']).json()
     remoteci_id = remoteci['remoteci']['id']
 
