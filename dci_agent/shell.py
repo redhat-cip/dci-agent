@@ -54,9 +54,16 @@ def get_dci_context(**args):
 def get_dci_job_data(ctx, **dci):
     """Retrieve informations about the job to run. """
 
-    topic_id = dci_topic.get(ctx, dci['topic']).json()['topic']['id']
-    remoteci = dci_remoteci.get(ctx, dci['remoteci']).json()
-    remoteci_id = remoteci['remoteci']['id']
+    topic_id = dci_topic.list(
+        ctx,
+        where='name:' + dci['topic'],
+        limit=1).json()['topics'][0]['id']
+    r = dci_remoteci.get(ctx, dci['remoteci'])
+    if r.status_code == 200:
+        remoteci_id = r.json()['remoteci']['id']
+    else:
+        r = dci_remoteci.list(ctx, where='name:' + dci['remoteci'])
+        remoteci_id = r.json()['remotecis'][0]['id']
 
     r = dci_job.schedule(ctx, remoteci_id, topic_id=topic_id)
     if r.status_code == 412:
