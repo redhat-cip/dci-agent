@@ -1,19 +1,4 @@
 DCI Agent
 =========
 
-Dci
----
-
-TODO
-
-
-Chainsaw
---------
-
-TODO
-
-
-Tox
----
-
-TODO
+Deprecated, please see: https://github.com/redhat-cip/dci-ansible-agent
